@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're in — Autoglia</title>
+  <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #07070f; --bg2: #0d0d1c; --cyan: #00d4ff;
+      --cyan-dim: #00d4ff22; --text: #f0f4ff; --muted: #8892a4;
+      --border: #1e2040; --success: #10b981; --radius: 12px;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem; -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      background: var(--bg2); border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 20px; padding: 3rem 2.5rem;
+      max-width: 560px; width: 100%; text-align: center;
+      box-shadow: 0 0 80px rgba(0,212,255,0.06);
+    }
+    .logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 2rem; }
+    .logo img { width: 36px; height: 36px; }
+    .logo span { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.06em; }
+    .check-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(16,185,129,0.12); border: 2px solid rgba(16,185,129,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .sub { color: var(--muted); font-size: 1rem; line-height: 1.6; margin-bottom: 2.5rem; }
+    .download-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      background: var(--cyan); color: #000;
+      font-weight: 800; font-size: 1rem;
+      padding: 1rem 2rem; border-radius: var(--radius);
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+      margin-bottom: 1rem;
+    }
+    .download-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .version { color: var(--muted); font-size: 0.8rem; margin-bottom: 2.5rem; }
+    .steps {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; text-align: left;
+      margin-bottom: 2rem;
+    }
+    .steps h3 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1rem; }
+    .step { display: flex; gap: 0.75rem; margin-bottom: 0.85rem; }
+    .step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      background: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: var(--cyan); margin-top: 1px;
+    }
+    .step p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .step p code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      background: #12122a; color: var(--cyan);
+      padding: 0.1rem 0.35rem; border-radius: 4px;
+    }
+    .step p strong { color: var(--text); font-weight: 600; }
+    .support { color: var(--muted); font-size: 0.85rem; }
+    .support a { color: var(--cyan); text-decoration: none; }
+    .support a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <img src="assets/autoglia-icon-square.png" alt="Autoglia">
+      <span>AUTOGLIA</span>
+    </div>
+
+    <div class="check-circle">✓</div>
+    <h1>You're in.</h1>
+    <p class="sub">Payment confirmed. Download Autoglia v2.8.0 below — your OpenClaw agent is about to have a real memory.</p>
+
+    <!-- Replace href with your GitHub Release download URL -->
+    <a class="download-btn" href="YOUR_GITHUB_RELEASE_DOWNLOAD_URL" download>
+      ↓ Download autoglia-v2.8.0.zip
+    </a>
+    <p class="version">v2.8.0 · 88 KB · Includes all future updates</p>
+
+    <div class="steps">
+      <h3>Quick install</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <p>Unzip into your OpenClaw skills folder:<br><code>cd ~/clawd/skills/ && unzip autoglia-v2.8.0.zip</code></p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p>Run the pre-flight check:<br><code>python3 memory-db/setup.py check</code></p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p>Install:<br><code>python3 memory-db/setup.py install</code></p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <p><strong>That's it.</strong> Restart your OpenClaw session — it will run recovery automatically and your agent will have memory.</p>
+      </div>
+    </div>
+
+    <p class="support">Questions? <a href="mailto:support@autoglia.com">support@autoglia.com</a> — we reply within 24 hours.</p>
+  </div>
+</body>
+</html>
