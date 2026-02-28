@@ -400,9 +400,9 @@
       <span class="dim">$ </span><span class="cyan">python3 ~/clawd/skills/memory-db/recover.py</span><br><br>
       <span class="green">✓ MEMORY RESTORE — Session context recovered</span><br>
       <span class="dim">  Last session:</span> Marketing campaign planning (Feb 27)<br>
-      <span class="dim">  Open tasks:</span> Draft 3 Facebook posts · Review ScholarBitBook pricing<br>
-      <span class="dim">  Contacts:</span> <span class="purple">Jesse Genet</span> (last contacted Feb 26) · <span class="purple">Linn</span> (ScholarBitBook)<br>
-      <span class="dim">  Active projects:</span> ScholarBitBook (high priority) · Autoglia launch<br>
+      <span class="dim">  Open tasks:</span> Draft 3 launch posts · Review pricing strategy<br>
+      <span class="dim">  Contacts:</span> <span class="purple">Alex Rivera</span> (last contacted Feb 26) · <span class="purple">Morgan Chen</span> (Acme Corp)<br>
+      <span class="dim">  Active projects:</span> Product Launch (high priority) · Q1 Outreach<br>
       <span class="dim">  Knowledge:</span> 142 facts · 38 contacts · 12 checkpoints<br><br>
       <span class="green">→ Context restored. Continuing from where you left off.</span>
     </div>
@@ -447,14 +447,14 @@
   <div class="compare-block">
     <div class="compare-card before">
       <div class="label">Without Autoglia</div>
-      <p>You: <span class="bot">"What do you remember about Jesse Genet?"</span></p>
-      <p>Agent: <span class="bot">"I don't have any information about that person. Could you remind me who she is?"</span></p>
-      <p style="color:#ef4444; font-size:0.82rem;">↑ You mentioned her 11 times across 6 sessions.</p>
+      <p>You: <span class="bot">"What do you remember about Alex Rivera?"</span></p>
+      <p>Agent: <span class="bot">"I don't have any information about that person. Could you remind me who they are?"</span></p>
+      <p style="color:#ef4444; font-size:0.82rem;">↑ You mentioned them 11 times across 6 sessions.</p>
     </div>
     <div class="compare-card after">
       <div class="label">With Autoglia</div>
-      <p>You: <span class="bot">"What do you remember about Jesse Genet?"</span></p>
-      <p>Agent: <span class="bot">"Jesse Genet — tech founder, previously @lumi, homeschooling 4 kids, interested in vibe coding. Last contacted Feb 26. She's on your outreach list for ScholarBitBook."</span></p>
+      <p>You: <span class="bot">"What do you remember about Alex Rivera?"</span></p>
+      <p>Agent: <span class="bot">"Alex Rivera — product lead at Acme Corp, interested in API integrations. Last contacted Feb 26. On your outreach list for Q1."</span></p>
       <p style="color:var(--success); font-size:0.82rem;">↑ Pulled from the contacts table. Instant.</p>
     </div>
   </div>
@@ -462,12 +462,12 @@
     <div class="compare-card before">
       <div class="label">Context loss — Without Autoglia</div>
       <p>Agent: <span class="bot">"Hello! How can I help you today?"</span></p>
-      <p style="color:#ef4444; font-size:0.82rem;">↑ You were in the middle of a marketing campaign. Context window compacted. The thread is gone.</p>
+      <p style="color:#ef4444; font-size:0.82rem;">↑ You were in the middle of a product launch. Context window compacted. The thread is gone.</p>
     </div>
     <div class="compare-card after">
       <div class="label">Context loss — With Autoglia</div>
       <p>Agent runs <code>recover.py</code> automatically:</p>
-      <p>Agent: <span class="bot">"I see we were working on the ScholarBitBook launch — 3 Facebook posts scheduled today. Want me to continue?"</span></p>
+      <p>Agent: <span class="bot">"I see we were working on the Q1 product launch — 3 posts scheduled today and a pricing review pending. Want me to continue?"</span></p>
       <p style="color:var(--success); font-size:0.82rem;">↑ Reconstructed from database in 2 seconds.</p>
     </div>
   </div>
