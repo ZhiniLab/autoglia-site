@@ -38,16 +38,15 @@
     }
     h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
     .sub { color: var(--muted); font-size: 1rem; line-height: 1.6; margin-bottom: 2.5rem; }
-    .download-btn {
-      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
-      background: var(--cyan); color: #000;
-      font-weight: 800; font-size: 1rem;
-      padding: 1rem 2rem; border-radius: var(--radius);
-      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
-      margin-bottom: 1rem;
+    .email-notice {
+      display: flex; align-items: center; gap: 1rem;
+      background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: var(--radius); padding: 1.1rem 1.4rem;
+      text-align: left; margin-bottom: 2.5rem;
     }
-    .download-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .version { color: var(--muted); font-size: 0.8rem; margin-bottom: 2.5rem; }
+    .email-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .email-label { font-size: 0.95rem; font-weight: 600; color: var(--cyan); margin-bottom: 0.2rem; }
+    .email-hint { font-size: 0.8rem; color: var(--muted); }
     .steps {
       background: var(--bg); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 1.5rem; text-align: left;
@@ -83,13 +82,15 @@
 
     <div class="check-circle">✓</div>
     <h1>You're in.</h1>
-    <p class="sub">Payment confirmed. Download Autoglia v2.8.0 below — your OpenClaw agent is about to have a real memory.</p>
+    <p class="sub">Payment confirmed. Your download link is on its way — check your inbox (and spam folder) for an email from <strong>support@autoglia.com</strong>.</p>
 
-    <!-- Replace href with your GitHub Release download URL -->
-    <a class="download-btn" href="https://github.com/ZhiniLab/autoglia-site/releases/download/v2.8.0/autoglia-v2.8.0.zip" download>
-      ↓ Download autoglia-v2.8.0.zip
-    </a>
-    <p class="version">v2.8.0 · 88 KB · Includes all future updates</p>
+    <div class="email-notice">
+      <div class="email-icon">✉️</div>
+      <div>
+        <p class="email-label">Download link sent to your email</p>
+        <p class="email-hint">Link expires in 48 hours · 3 downloads · unique to you</p>
+      </div>
+    </div>
 
     <div class="steps">
       <h3>Quick install</h3>
