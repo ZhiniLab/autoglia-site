@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autoglia — The Memory That Runs Itself</title>
+  <meta name="description" content="Persistent SQLite memory for your OpenClaw agent. Automatic recording, context recovery, and a full web dashboard. One-time purchase, no subscription, no cloud.">
+  <meta property="og:title" content="Autoglia — The Memory That Runs Itself">
+  <meta property="og:description" content="Give your OpenClaw agent a real brain. 18-table SQLite database, automatic recording, and context recovery that works even when the AI doesn't.">
+  <meta property="og:image" content="assets/autoglia-logo-astrocyte.png">
+  <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07070f;
+      --bg2:       #0d0d1c;
+      --bg3:       #12122a;
+      --cyan:      #00d4ff;
+      --cyan-dim:  #00d4ff33;
+      --purple:    #7c3aed;
+      --text:      #f0f4ff;
+      --muted:     #8892a4;
+      --border:    #1e2040;
+      --success:   #10b981;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(7,7,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { width: 32px; height: 32px; }
+    .nav-logo span { font-size: 1.1rem; font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--cyan); color: #000;
+      font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.25rem; border-radius: 6px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 800px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.3);
+      color: var(--cyan); font-size: 0.8rem; font-weight: 600;
+      padding: 0.35rem 1rem; border-radius: 100px;
+      margin-bottom: 1.5rem; letter-spacing: 0.04em;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.03em; margin-bottom: 1.25rem;
+      max-width: 800px;
+    }
+    .hero h1 em { font-style: normal; color: var(--cyan); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted); max-width: 580px;
+      margin-bottom: 2.5rem; line-height: 1.7;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--cyan); color: #000;
+      font-weight: 800; font-size: 1rem;
+      padding: 0.85rem 2rem; border-radius: var(--radius);
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--muted);
+      font-weight: 500; font-size: 0.95rem;
+      padding: 0.85rem 1.5rem; border-radius: var(--radius);
+      text-decoration: none; border: 1px solid var(--border);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+    .hero-price {
+      margin-top: 1rem; font-size: 0.85rem; color: var(--muted);
+    }
+    .hero-price strong { color: var(--cyan); }
+    .hero-img {
+      margin-top: 4rem; width: 100%; max-width: 900px;
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+    }
+    .dashboard-mock {
+      background: var(--bg2); padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      color: #7aecff; text-align: left; line-height: 1.8;
+    }
+    .dashboard-mock .dim { color: var(--muted); }
+    .dashboard-mock .green { color: var(--success); }
+    .dashboard-mock .cyan { color: var(--cyan); }
+    .dashboard-mock .purple { color: #a78bfa; }
+
+    /* ── SECTION ── */
+    section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 3rem; }
+
+    /* ── PROBLEM ── */
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem; margin-top: 2.5rem;
+    }
+    .problem-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+    }
+    .problem-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .problem-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .problem-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── COMPARISON ── */
+    .compare-block {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    @media(max-width:640px){ .compare-block { grid-template-columns: 1fr; } }
+    .compare-card {
+      border-radius: var(--radius); padding: 1.75rem;
+      border: 1px solid var(--border);
+    }
+    .compare-card.before { background: var(--bg2); }
+    .compare-card.after {
+      background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05));
+      border-color: rgba(0,212,255,0.25);
+    }
+    .compare-card .label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 1rem; padding: 0.3rem 0.75rem; border-radius: 4px; display: inline-block;
+    }
+    .compare-card.before .label { background: rgba(255,255,255,0.06); color: var(--muted); }
+    .compare-card.after .label { background: var(--cyan-dim); color: var(--cyan); }
+    .compare-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 0.75rem; }
+    .compare-card p:last-child { margin-bottom: 0; }
+    .compare-card .bot { font-weight: 600; color: var(--text); }
+
+    /* ── HOW IT WORKS ── */
+    .layers { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2.5rem; }
+    .layer {
+      display: grid; grid-template-columns: 56px 1fr;
+      gap: 1.25rem; align-items: start;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+    }
+    .layer-num {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem; color: var(--cyan);
+      flex-shrink: 0;
+    }
+    .layer h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .layer p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .layer code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      background: var(--bg3); color: var(--cyan);
+      padding: 0.15rem 0.4rem; border-radius: 4px;
+    }
+
+    /* ── FEATURES GRID ── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; margin-top: 2.5rem;
+    }
+    .feature-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(0,212,255,0.3); }
+    .feature-card .feat-icon { font-size: 1.25rem; margin-bottom: 0.6rem; }
+    .feature-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .feature-card p { color: var(--muted); font-size: 0.83rem; line-height: 1.55; }
+
+    /* ── COMPARISON TABLE ── */
+    .comp-table-wrap { overflow-x: auto; margin-top: 2.5rem; }
+    table {
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    }
+    thead th {
+      padding: 0.75rem 1.25rem; text-align: left; font-weight: 700;
+      border-bottom: 1px solid var(--border); color: var(--muted);
+      font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    thead th.highlight { color: var(--cyan); }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 0.9rem 1.25rem; color: var(--muted); }
+    tbody td:first-child { color: var(--text); font-weight: 500; }
+    tbody td.highlight { color: var(--text); font-weight: 600; }
+    .check { color: var(--success); }
+    .cross { color: #ef4444; }
+    .partial { color: #f59e0b; }
+
+    /* ── WHAT'S INCLUDED ── */
+    .files-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.75rem; margin-top: 2.5rem;
+    }
+    .file-row {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+    }
+    .file-row code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      color: var(--cyan); white-space: nowrap; flex-shrink: 0;
+    }
+    .file-row span { color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+
+    /* ── PRICING ── */
+    .pricing-wrap { display: flex; justify-content: center; margin-top: 2.5rem; }
+    .pricing-card {
+      background: var(--bg2); border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 20px; padding: 2.5rem 3rem;
+      max-width: 480px; width: 100%; text-align: center;
+      box-shadow: 0 0 60px rgba(0,212,255,0.06);
+    }
+    .pricing-badge {
+      display: inline-block; background: var(--cyan-dim);
+      color: var(--cyan); font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.3rem 0.9rem; border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    .pricing-price {
+      font-size: 4rem; font-weight: 800; line-height: 1;
+      letter-spacing: -0.04em; margin-bottom: 0.25rem;
+    }
+    .pricing-price sup { font-size: 1.5rem; font-weight: 600; vertical-align: super; }
+    .pricing-note { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .pricing-raise { color: var(--muted); font-size: 0.8rem; margin-bottom: 2rem; }
+    .pricing-raise strong { color: var(--text); }
+    .pricing-features { list-style: none; text-align: left; margin-bottom: 2rem; }
+    .pricing-features li {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+      font-size: 0.9rem; color: var(--muted);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .pricing-features li .ok { color: var(--success); font-size: 1rem; flex-shrink: 0; }
+    .stripe-btn {
+      display: block; width: 100%;
+      background: var(--cyan); color: #000;
+      font-weight: 800; font-size: 1.05rem;
+      padding: 1rem 2rem; border-radius: var(--radius);
+      text-decoration: none; text-align: center;
+      transition: opacity 0.2s, transform 0.2s; border: none; cursor: pointer;
+    }
+    .stripe-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .pricing-small { margin-top: 1rem; color: var(--muted); font-size: 0.8rem; }
+    .anchor { color: var(--muted); margin-top: 1rem; font-size: 0.85rem; }
+    .anchor strong { color: #ef4444; text-decoration: line-through; }
+    .anchor em { font-style: normal; color: var(--success); }
+
+    /* ── REQUIREMENTS ── */
+    .req-list { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+    .req-pill {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.5rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem; color: var(--muted);
+    }
+
+    /* ── FAQ ── */
+    .faq { display: flex; flex-direction: column; gap: 1rem; margin-top: 2.5rem; }
+    details {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    summary {
+      padding: 1.25rem 1.5rem; cursor: pointer;
+      font-weight: 600; font-size: 0.95rem;
+      list-style: none; display: flex; justify-content: space-between; align-items: center;
+    }
+    summary::after { content: '+'; color: var(--cyan); font-size: 1.25rem; }
+    details[open] summary::after { content: '−'; }
+    details p { padding: 0 1.5rem 1.25rem; color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem; text-align: center;
+      color: var(--muted); font-size: 0.85rem;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 1rem; }
+    .footer-logo img { width: 24px; height: 24px; }
+    .footer-logo span { font-weight: 700; color: var(--text); letter-spacing: 0.05em; }
+
+    /* ── VIDEO PLACEHOLDER ── */
+    .video-wrap {
+      margin-top: 2.5rem; border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border); aspect-ratio: 16/9;
+      background: var(--bg2); display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1rem; color: var(--muted);
+    }
+    .video-wrap .play-btn {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--cyan-dim); border: 2px solid rgba(0,212,255,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; cursor: pointer;
+    }
+
+    @media(max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      section { padding: 3.5rem 1.25rem; }
+      .hero { padding: 4rem 1.25rem 3rem; }
+      .pricing-card { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#">
+    <img src="assets/autoglia-icon-square.png" alt="Autoglia">
+    <span>AUTOGLIA</span>
+  </a>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-badge"><span></span> For OpenClaw agents — v2.8.0</div>
+  <h1>The memory that<br><em>runs itself.</em></h1>
+  <p class="hero-sub">Your OpenClaw agent wakes up fresh every session. Autoglia gives it a real SQLite brain — structured memory that records automatically, survives context loss, and knows who you are.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
+    <a class="btn-secondary" href="#how-it-works">See how it works</a>
+  </div>
+  <p class="hero-price">One-time purchase. No subscription. No cloud. <strong>Introductory price — raises to $29.</strong></p>
+
+  <div class="hero-img">
+    <div class="dashboard-mock">
+      <span class="dim">$ </span><span class="cyan">python3 ~/clawd/skills/memory-db/recover.py</span><br><br>
+      <span class="green">✓ MEMORY RESTORE — Session context recovered</span><br>
+      <span class="dim">  Last session:</span> Marketing campaign planning (Feb 27)<br>
+      <span class="dim">  Open tasks:</span> Draft 3 Facebook posts · Review ScholarBitBook pricing<br>
+      <span class="dim">  Contacts:</span> <span class="purple">Jesse Genet</span> (last contacted Feb 26) · <span class="purple">Linn</span> (ScholarBitBook)<br>
+      <span class="dim">  Active projects:</span> ScholarBitBook (high priority) · Autoglia launch<br>
+      <span class="dim">  Knowledge:</span> 142 facts · 38 contacts · 12 checkpoints<br><br>
+      <span class="green">→ Context restored. Continuing from where you left off.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROBLEM ── -->
+<section id="problem">
+  <div class="section-label">The problem</div>
+  <h2>Your agent forgets everything.<br>Every. Single. Session.</h2>
+  <p class="section-sub">OpenClaw agents are powerful. But without persistent memory, every conversation starts from zero. That's expensive — in time, frustration, and trust.</p>
+
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="icon">👤</div>
+      <h3>Contacts you've mentioned a hundred times</h3>
+      <p>You tell it your client's name, email, and project. Next session: "I don't have any information about that person."</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">📋</div>
+      <h3>Projects explained from scratch, again</h3>
+      <p>Three weeks in, your agent has no idea what you're building. You re-explain the whole thing. Again. For the fourth time.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">💥</div>
+      <h3>Context loss kills the thread</h3>
+      <p>Context window fills up. Compaction hits. The agent greets you like a stranger mid-project. Everything you built up — gone.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">📝</div>
+      <h3>Decisions made and immediately forgotten</h3>
+      <p>You chose a strategy. Two months later: "I don't have context on why we decided that." The reasoning is lost forever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARISON ── -->
+<section>
+  <div class="section-label">Before & After</div>
+  <h2>What actually changes.</h2>
+  <p class="section-sub">The same conversation, with and without Autoglia.</p>
+  <div class="compare-block">
+    <div class="compare-card before">
+      <div class="label">Without Autoglia</div>
+      <p>You: <span class="bot">"What do you remember about Jesse Genet?"</span></p>
+      <p>Agent: <span class="bot">"I don't have any information about that person. Could you remind me who she is?"</span></p>
+      <p style="color:#ef4444; font-size:0.82rem;">↑ You mentioned her 11 times across 6 sessions.</p>
+    </div>
+    <div class="compare-card after">
+      <div class="label">With Autoglia</div>
+      <p>You: <span class="bot">"What do you remember about Jesse Genet?"</span></p>
+      <p>Agent: <span class="bot">"Jesse Genet — tech founder, previously @lumi, homeschooling 4 kids, interested in vibe coding. Last contacted Feb 26. She's on your outreach list for ScholarBitBook."</span></p>
+      <p style="color:var(--success); font-size:0.82rem;">↑ Pulled from the contacts table. Instant.</p>
+    </div>
+  </div>
+  <div class="compare-block" style="margin-top:1.25rem;">
+    <div class="compare-card before">
+      <div class="label">Context loss — Without Autoglia</div>
+      <p>Agent: <span class="bot">"Hello! How can I help you today?"</span></p>
+      <p style="color:#ef4444; font-size:0.82rem;">↑ You were in the middle of a marketing campaign. Context window compacted. The thread is gone.</p>
+    </div>
+    <div class="compare-card after">
+      <div class="label">Context loss — With Autoglia</div>
+      <p>Agent runs <code>recover.py</code> automatically:</p>
+      <p>Agent: <span class="bot">"I see we were working on the ScholarBitBook launch — 3 Facebook posts scheduled today. Want me to continue?"</span></p>
+      <p style="color:var(--success); font-size:0.82rem;">↑ Reconstructed from database in 2 seconds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how-it-works">
+  <div class="section-label">Architecture</div>
+  <h2>Four layers. Fully automatic.</h2>
+  <p class="section-sub">Autoglia doesn't ask your agent to cooperate. The infrastructure records everything whether the agent helps or not.</p>
+
+  <div class="layers">
+    <div class="layer">
+      <div class="layer-num">1</div>
+      <div>
+        <h3>The Database — SQLite, 18 tables, on your machine</h3>
+        <p>Contacts, projects, knowledge, decisions, conversations, preferences, reminders — all in a single <code>~/memory.db</code> file. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">2</div>
+      <div>
+        <h3>Infrastructure-level recording — <code>sync-sessions.py</code></h3>
+        <p>Pulls every message from OpenClaw's own JSONL session files directly into the database. Runs on session start. Works even when the agent didn't save anything during the conversation. No LLM cooperation required.</p>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">3</div>
+      <div>
+        <h3>Automatic checkpointing — <code>auto-checkpoint.py</code></h3>
+        <p>An hourly cron job finds any conversations with unsummarized messages and generates structured summaries — topic, decisions made, follow-ups — with no LLM involvement. The system never misses a session.</p>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">4</div>
+      <div>
+        <h3>Context recovery — <code>recover.py</code></h3>
+        <p>Detects when the context window has been compacted. Reads the database — recent checkpoints, open tasks, contacts mentioned — and reconstructs the thread automatically. The conversation continues as if nothing happened.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="section-label">What's included</div>
+  <h2>Everything. No extras needed.</h2>
+  <p class="section-sub">One zip. Sixteen files. A complete memory infrastructure that's live in 5 minutes.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon">🗄️</div>
+      <h4>18-Table Schema</h4>
+      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, and more.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔄</div>
+      <h4>Auto-Checkpoint</h4>
+      <p>Hourly cron job summarizes every unsummarized conversation automatically. No agent needed. Never miss a session.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">⚡</div>
+      <h4>Context Recovery</h4>
+      <p>Detects compaction, reads the database, and hands your agent a full context restore block. Picks up mid-conversation.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📊</div>
+      <h4>Web Dashboard</h4>
+      <p>Local Flask app at localhost:5000. Browse contacts, knowledge, projects, and conversations live. Live updates every 3 seconds.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔒</div>
+      <h4>SQL Injection Safe</h4>
+      <p><code>memdb.py</code> is the only write interface — fully parameterized queries. No raw SQL from user input. Ever.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📦</div>
+      <h4>One-Command Install</h4>
+      <p>Pre-flight check, schema migration, AGENTS.md injection, workspace indexing, cron registration. Full rollback manifest.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔀</div>
+      <h4>Migration System</h4>
+      <p>Versioned schema upgrades. Install a new version — your existing data is never touched. Safe to update anytime.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📥</div>
+      <h4>Import Existing Notes</h4>
+      <p>Scan your workspace markdown files into the database on first run. Everything you've already written becomes queryable.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">💾</div>
+      <h4>Export Anytime</h4>
+      <p>Full JSON or CSV export in one command. Your data is yours — take it anywhere, back it up however you want.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARISON TABLE ── -->
+<section>
+  <div class="section-label">Comparison</div>
+  <h2>How we stack up.</h2>
+  <p class="section-sub">The cloud tools charge per month. The marketplace skill uses markdown files. Autoglia is the infrastructure layer.</p>
+
+  <div class="comp-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th class="highlight">Autoglia</th>
+          <th>OpenClaw Memory Skill ($9)</th>
+          <th>LLMory Pro ($29/mo)</th>
+          <th>ChatGPT Memory</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Storage</td>
+          <td class="highlight">Local SQLite DB</td>
+          <td>Markdown files</td>
+          <td>Cloud server</td>
+          <td>OpenAI servers</td>
+        </tr>
+        <tr>
+          <td>Auto recording</td>
+          <td class="highlight"><span class="check">✓</span> Infrastructure-level</td>
+          <td><span class="partial">~</span> LLM must cooperate</td>
+          <td><span class="partial">~</span> Partial</td>
+          <td><span class="partial">~</span> LLM decides</td>
+        </tr>
+        <tr>
+          <td>Context recovery</td>
+          <td class="highlight"><span class="check">✓</span> Automatic</td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Structured tables</td>
+          <td class="highlight"><span class="check">✓</span> 18 tables</td>
+          <td><span class="cross">✗</span> Flat files</td>
+          <td><span class="partial">~</span> Limited</td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Web dashboard</td>
+          <td class="highlight"><span class="check">✓</span></td>
+          <td><span class="cross">✗</span></td>
+          <td><span class="check">✓</span></td>
+          <td><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Data stays local</td>
+          <td class="highlight"><span class="check">✓</span> Always</td>
+          <td><span class="check">✓</span></td>
+          <td><span class="cross">✗</span> Cloud</td>
+          <td><span class="cross">✗</span> Cloud</td>
+        </tr>
+        <tr>
+          <td>Price</td>
+          <td class="highlight">$19 one-time</td>
+          <td>$9 one-time</td>
+          <td>$29/month ($348/yr)</td>
+          <td>Subscription</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── VIDEO ── -->
+<section>
+  <div class="section-label">Demo</div>
+  <h2>See it in action.</h2>
+  <p class="section-sub">Watch a live demo — context recovery, the dashboard, and install in under 5 minutes.</p>
+  <div class="video-wrap">
+    <!-- Replace src with your YouTube embed URL when ready -->
+    <!-- <iframe width="100%" height="100%" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
+    <div class="play-btn">▶</div>
+    <p style="font-size:0.85rem;">Demo video coming soon</p>
+  </div>
+</section>
+
+<!-- ── WHAT'S IN THE ZIP ── -->
+<section>
+  <div class="section-label">What's in the package</div>
+  <h2>16 files. No fluff.</h2>
+  <div class="files-grid">
+    <div class="file-row"><code>setup.py</code><span>One-command install, uninstall, pre-flight check, rollback manifest</span></div>
+    <div class="file-row"><code>memdb.py</code><span>Safe parameterized query interface — the only way to write to the DB</span></div>
+    <div class="file-row"><code>recover.py</code><span>Compaction detection and full context restore from the database</span></div>
+    <div class="file-row"><code>sync-sessions.py</code><span>Infrastructure-level transcript sync from OpenClaw JSONL files</span></div>
+    <div class="file-row"><code>auto-checkpoint.py</code><span>Hourly automated conversation checkpointing — no LLM required</span></div>
+    <div class="file-row"><code>checkpoint.py</code><span>Manual atomic checkpoint for critical decisions</span></div>
+    <div class="file-row"><code>dashboard.py</code><span>Local Flask web dashboard — browse your memory at localhost:5000</span></div>
+    <div class="file-row"><code>migrate.py</code><span>Versioned schema migrations — upgrades never break your data</span></div>
+    <div class="file-row"><code>import.py</code><span>One-time scan of existing workspace markdown files into the DB</span></div>
+    <div class="file-row"><code>export.py</code><span>Full JSON/CSV backup and migration export</span></div>
+    <div class="file-row"><code>stats.py</code><span>Memory health report — row counts, activity, unsummarized warnings</span></div>
+    <div class="file-row"><code>init.sql</code><span>Full 18-table schema definition</span></div>
+    <div class="file-row"><code>SKILL.md</code><span>Complete instructions your agent reads on every session start</span></div>
+    <div class="file-row"><code>README.md</code><span>Setup guide with examples and troubleshooting</span></div>
+    <div class="file-row"><code>EXAMPLES.md</code><span>Every memdb.py command with real conversation examples</span></div>
+    <div class="file-row"><code>docs/FAQ.md</code><span>Common questions, edge cases, and upgrade notes</span></div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2>One price. Forever.</h2>
+  <p class="section-sub">LLMory Pro charges $29 a month. Autoglia charges $19. Once. You get all future updates included.</p>
+  <div class="pricing-wrap">
+    <div class="pricing-card">
+      <div class="pricing-badge">Introductory Launch Price</div>
+      <div class="pricing-price"><sup>$</sup>19</div>
+      <div class="pricing-note">one-time — no subscription, ever</div>
+      <div class="pricing-raise">Price raises to <strong>$29</strong> after the first 50 customers. <em>You lock in $19 forever.</em></div>
+      <ul class="pricing-features">
+        <li><span class="ok">✓</span> Full v2.8.0 package — 16 files</li>
+        <li><span class="ok">✓</span> Auto-checkpoint + context recovery</li>
+        <li><span class="ok">✓</span> Web dashboard included</li>
+        <li><span class="ok">✓</span> All future version updates</li>
+        <li><span class="ok">✓</span> Email support</li>
+        <li><span class="ok">✓</span> 7-day full refund, no questions asked</li>
+        <li><span class="ok">✓</span> Your data stays on your machine. Always.</li>
+      </ul>
+      <!-- Replace href with your Stripe Payment Link -->
+      <a class="stripe-btn" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
+      <p class="pricing-small">Secure checkout via Stripe. Delivered instantly to your inbox.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── REQUIREMENTS ── -->
+<section>
+  <div class="section-label">Requirements</div>
+  <h2>What you need.</h2>
+  <div class="req-list">
+    <div class="req-pill">OpenClaw (any recent version)</div>
+    <div class="req-pill">exec tool enabled</div>
+    <div class="req-pill">Python 3.9+</div>
+    <div class="req-pill">Linux / macOS / Windows (WSL)</div>
+    <div class="req-pill">flask (pip install flask — dashboard only, optional)</div>
+  </div>
+  <p style="margin-top:1.25rem; color:var(--muted); font-size:0.88rem;">Python standard library only for core functionality — no pip installs required except for the optional web dashboard.</p>
+</section>
+
+<!-- ── FAQ ── -->
+<section id="faq">
+  <div class="section-label">FAQ</div>
+  <h2>Common questions.</h2>
+  <div class="faq">
+    <details>
+      <summary>Does this work with the free version of OpenClaw?</summary>
+      <p>Yes. Autoglia works with any recent version of OpenClaw that has the <code>exec</code> tool enabled. It doesn't require a specific tier or hosting setup.</p>
+    </details>
+    <details>
+      <summary>Will my existing data be safe when I upgrade?</summary>
+      <p>Yes. The migration system (<code>migrate.py</code>) applies versioned schema changes without touching existing data. You can upgrade from any prior version safely. The installer also makes a full backup before making any changes.</p>
+    </details>
+    <details>
+      <summary>What if my agent doesn't save things during a conversation?</summary>
+      <p>That's exactly what Autoglia is designed for. <code>sync-sessions.py</code> pulls transcripts directly from OpenClaw's own JSONL files — it doesn't rely on the agent doing anything. And <code>auto-checkpoint.py</code> summarizes them on schedule. Nothing is lost even when the agent is uncooperative.</p>
+    </details>
+    <details>
+      <summary>Can I get a refund?</summary>
+      <p>Yes — full refund within 7 days, no questions asked. Email support is included and we'll help you get it working if you hit any issues.</p>
+    </details>
+    <details>
+      <summary>Does my data ever leave my machine?</summary>
+      <p>Never. The database is a single SQLite file at <code>~/memory.db</code>. No cloud, no API calls for storage, no third-party servers. Autoglia is entirely local.</p>
+    </details>
+    <details>
+      <summary>Can I extend the schema with my own tables?</summary>
+      <p>Yes. Use <code>memdb.py create-table</code> to add extension tables. Every custom table is logged in <code>_schema_log</code> with the reason and session that created it — so there's a full audit trail and upgrades never accidentally drop your custom tables.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="assets/autoglia-icon-square.png" alt="Autoglia">
+    <span>AUTOGLIA</span>
+  </div>
+  <p>Built by <a href="#">ZhiniLab LLC</a> · <a href="mailto:support@autoglia.com">support@autoglia.com</a></p>
+  <p style="margin-top:0.5rem;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Changelog</a></p>
+  <p style="margin-top:1rem; font-size:0.75rem;">Autoglia is not affiliated with OpenClaw or Anthropic.</p>
+</footer>
+
+</body>
+</html>
