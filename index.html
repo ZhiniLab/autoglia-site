@@ -342,6 +342,133 @@
     .footer-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
     .footer-logo img { height: 32px; width: auto; }
 
+    /* ── SECURITY ── */
+    .security-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem; margin-top: 2.5rem;
+    }
+    .security-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+    }
+    .security-card .sec-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .security-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .security-card ul { list-style: none; }
+    .security-card li {
+      color: var(--muted); font-size: 0.88rem; line-height: 1.6;
+      margin-bottom: 0.4rem; padding-left: 1.1rem; position: relative;
+    }
+    .security-card li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-size: 0.78rem; }
+    .security-card code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      background: var(--bg3); color: var(--cyan);
+      padding: 0.15rem 0.4rem; border-radius: 4px;
+    }
+    .data-flow {
+      margin-top: 2.5rem; background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem;
+    }
+    .data-flow-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 1.5rem;
+    }
+    .flow-rows { display: flex; flex-direction: column; gap: 0; }
+    .flow-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .flow-indent { padding-left: 2rem; }
+    .flow-node {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.35rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text);
+      white-space: nowrap;
+    }
+    .flow-node.source { border-color: rgba(0,212,255,0.3); color: var(--cyan); }
+    .flow-node.dest { border-color: rgba(124,58,237,0.3); color: #a78bfa; }
+    .flow-arrow { color: var(--cyan); font-size: 0.85rem; flex-shrink: 0; }
+    .flow-down { color: var(--muted); padding-left: 1rem; font-size: 0.78rem; line-height: 2.8; }
+    .flow-note { color: var(--muted); font-size: 0.78rem; font-style: italic; }
+    .checkpoint-compare {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;
+    }
+    @media(max-width:640px){ .checkpoint-compare { grid-template-columns: 1fr; } }
+    .ck-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+    }
+    .ck-card.auto { border-left: 3px solid rgba(0,212,255,0.5); }
+    .ck-card.manual { border-left: 3px solid rgba(124,58,237,0.6); }
+    .ck-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .ck-card.auto .ck-label { color: var(--cyan); }
+    .ck-card.manual .ck-label { color: #a78bfa; }
+    .ck-card p { color: var(--muted); font-size: 0.85rem; line-height: 1.65; }
+    .ck-card code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      background: var(--bg2); color: var(--cyan);
+      padding: 0.15rem 0.4rem; border-radius: 4px;
+    }
+
+    /* ── TERMINAL DEMO ── */
+    .demo-scenarios { display: flex; gap: 0.5rem; margin-bottom: 0; flex-wrap: wrap; }
+    .scenario-btn {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-bottom: none; color: var(--muted);
+      font-size: 0.82rem; font-weight: 600;
+      padding: 0.5rem 1.25rem; border-radius: 8px 8px 0 0;
+      cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .scenario-btn:hover { border-color: rgba(0,212,255,0.3); color: var(--text); }
+    .scenario-btn.active {
+      background: var(--bg2); border-color: rgba(0,212,255,0.4);
+      color: var(--cyan); border-bottom: 1px solid var(--bg2); position: relative; z-index: 1;
+    }
+    .terminal-wrap {
+      background: var(--bg2); border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 0 12px 12px 12px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5); position: relative;
+    }
+    .terminal-bar {
+      background: #0a0a1a; padding: 0.65rem 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .terminal-dot.red { background: #ef4444; }
+    .terminal-dot.yellow { background: #f59e0b; }
+    .terminal-dot.green { background: #10b981; }
+    .terminal-title { color: var(--muted); font-size: 0.75rem; margin-left: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+    .terminal-body {
+      padding: 1.5rem 1.5rem 0.75rem; min-height: 300px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+      line-height: 1.85; overflow-y: auto; color: var(--text);
+    }
+    .terminal-body .t-dim { color: var(--muted); }
+    .terminal-body .t-green { color: var(--success); }
+    .terminal-body .t-cyan { color: var(--cyan); }
+    .terminal-body .t-purple { color: #a78bfa; }
+    .terminal-body .t-red { color: #ef4444; }
+    .terminal-body .t-yellow { color: #f59e0b; }
+    .terminal-body .t-rule { color: #2a2a4a; }
+    .terminal-cursor {
+      display: inline-block; width: 8px; height: 15px;
+      background: var(--cyan); vertical-align: text-bottom;
+      animation: termBlink 1s step-end infinite;
+    }
+    @keyframes termBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    .terminal-footer {
+      padding: 0.65rem 1rem; border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end; background: #0a0a1a;
+    }
+    .replay-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); font-size: 0.78rem; font-weight: 600;
+      padding: 0.35rem 0.9rem; border-radius: 6px; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .replay-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
     /* ── VIDEO PLACEHOLDER ── */
     .video-wrap {
       margin-top: 2.5rem; border-radius: 16px; overflow: hidden;
@@ -374,6 +501,7 @@
   </a>
   <div class="nav-links">
     <a href="#how-it-works">How it works</a>
+    <a href="#security">Security</a>
     <a href="#features">Features</a>
     <a href="#pricing">Pricing</a>
     <a href="#faq">FAQ</a>
@@ -496,7 +624,7 @@
       <div class="layer-num">3</div>
       <div>
         <h3>Automatic checkpointing — <code>auto-checkpoint.py</code></h3>
-        <p>An hourly cron job finds any conversations with unsummarized messages and generates structured summaries — topic, decisions made, follow-ups — with no LLM involvement. The system never misses a session.</p>
+        <p>An hourly cron job finds sessions with unsummarized messages and extracts their content — first user requests, assistant responses, timestamps — using pure Python with zero API calls. No LLM is invoked. When your agent writes a manual checkpoint mid-session, that richer summary (with decisions and follow-ups) takes priority. Auto-checkpoint is the safety net that ensures nothing is ever lost, even if the agent never cooperates.</p>
       </div>
     </div>
     <div class="layer">
@@ -504,6 +632,95 @@
       <div>
         <h3>Context recovery — <code>recover.py</code></h3>
         <p>Detects when the context window has been compacted. Reads the database — recent checkpoints, open tasks, contacts mentioned — and reconstructs the thread automatically. The conversation continues as if nothing happened.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECURITY & DATA MODEL ── -->
+<section id="security">
+  <div class="section-label">Security & Data Model</div>
+  <h2>Your data never leaves<br>your machine.</h2>
+  <p class="section-sub">Here's exactly what Autoglia reads, what it writes, and what it never touches — no hand-waving.</p>
+
+  <div class="security-grid">
+    <div class="security-card">
+      <div class="sec-icon">📖</div>
+      <h3>What gets read</h3>
+      <ul>
+        <li>OpenClaw's own JSONL session files at <code>~/.clawdbot/sessions/</code></li>
+        <li>Each message: role, content, and timestamp — nothing else</li>
+        <li>Files are opened read-only, never modified or deleted</li>
+        <li>Only files newer than the last sync run are processed</li>
+      </ul>
+    </div>
+    <div class="security-card">
+      <div class="sec-icon">✏️</div>
+      <h3>What gets written</h3>
+      <ul>
+        <li>One file only: <code>~/memory.db</code> (SQLite, on your machine)</li>
+        <li>All writes go through <code>memdb.py</code> — fully parameterized queries, no raw SQL from user input</li>
+        <li>WAL journal mode — concurrent reads never block writes</li>
+        <li>Full rollback manifest created before any schema migration</li>
+      </ul>
+    </div>
+    <div class="security-card">
+      <div class="sec-icon">🚫</div>
+      <h3>What never happens</h3>
+      <ul>
+        <li>No network requests for storage — ever</li>
+        <li>No API calls during auto-checkpoint (pure Python, no LLM)</li>
+        <li>No third-party analytics or telemetry</li>
+        <li>No cloud sync, no vendor lock-in, no subscription server to go dark</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Data flow -->
+  <div class="data-flow">
+    <div class="data-flow-label">How data flows through the system</div>
+    <div class="flow-rows">
+      <div class="flow-row">
+        <div class="flow-node source">~/.clawdbot/sessions/*.jsonl</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">sync-sessions.py</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node dest">conversation_transcripts</div>
+        <div class="flow-note">&nbsp;(raw messages, read-only source)</div>
+      </div>
+      <div class="flow-row flow-indent" style="margin-top:0.3rem;">
+        <div class="flow-note">↓ cron, hourly — no API call</div>
+      </div>
+      <div class="flow-row flow-indent">
+        <div class="flow-node">auto-checkpoint.py</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node dest">conversation_log</div>
+        <div class="flow-note">&nbsp;(extracted excerpts, timestamps)</div>
+      </div>
+      <div class="flow-row flow-indent" style="margin-top:0.3rem;">
+        <div class="flow-note">↓ on session start</div>
+      </div>
+      <div class="flow-row flow-indent">
+        <div class="flow-node">recover.py</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node source">agent context</div>
+        <div class="flow-note">&nbsp;(reads DB, reconstructs thread)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkpoint explainer -->
+  <div style="margin-top:2.5rem;">
+    <div class="section-label" style="margin-bottom:0.75rem;">How checkpointing actually works</div>
+    <p style="color:var(--muted);font-size:0.95rem;max-width:620px;margin-bottom:1.5rem;">The phrase "no LLM involvement" specifically means <strong style="color:var(--text);">auto-checkpoint makes zero API calls</strong>. Here's the distinction between the two checkpoint types:</p>
+    <div class="checkpoint-compare">
+      <div class="ck-card auto">
+        <div class="ck-label">Auto-checkpoint — runs on cron</div>
+        <p>Pure Python. No API call. Runs hourly whether the agent cooperates or not. Extracts the first few user messages (up to 70 chars each) and the first assistant response as raw snippets. Topic = first user message. <strong style="color:var(--text);">Decisions and follow-ups are not filled in</strong> — this is a safety net, not a rich summary.</p>
+      </div>
+      <div class="ck-card manual">
+        <div class="ck-label">Manual checkpoint — agent-triggered</div>
+        <p>Your agent calls <code>checkpoint.py</code> mid-session with a real summary, decisions made, and follow-ups. This is the LLM writing about what it just did. These richer entries take priority over auto-checkpoints when <code>recover.py</code> reconstructs context. The two types complement each other.</p>
       </div>
     </div>
   </div>
@@ -636,18 +853,217 @@
   </div>
 </section>
 
-<!-- ── VIDEO ── -->
-<section>
-  <div class="section-label">Demo</div>
-  <h2>See it in action.</h2>
-  <p class="section-sub">Watch a live demo — context recovery, the dashboard, and install in under 5 minutes.</p>
-  <div class="video-wrap">
-    <!-- Replace src with your YouTube embed URL when ready -->
-    <!-- <iframe width="100%" height="100%" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
-    <div class="play-btn">▶</div>
-    <p style="font-size:0.85rem;">Demo video coming soon</p>
+<!-- ── DEMO ── -->
+<section id="demo">
+  <div class="section-label">Interactive Demo</div>
+  <h2>Try it yourself.</h2>
+  <p class="section-sub">Pick a scenario and watch Autoglia respond in real time. This is exactly what your agent sees.</p>
+
+  <div class="demo-scenarios">
+    <button class="scenario-btn active" onclick="runScenario(0, this)">Context Recovery</button>
+    <button class="scenario-btn" onclick="runScenario(1, this)">Contact Lookup</button>
+    <button class="scenario-btn" onclick="runScenario(2, this)">Memory Stats</button>
+  </div>
+  <div class="terminal-wrap">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <div class="terminal-title" id="terminal-title">recover.py — autoglia</div>
+    </div>
+    <div class="terminal-body" id="terminal-body"><span class="terminal-cursor"></span></div>
+    <div class="terminal-footer">
+      <button class="replay-btn" onclick="replayScenario()">↺ Run again</button>
+    </div>
   </div>
 </section>
+
+<script>
+(function() {
+  const TITLES = [
+    'recover.py — autoglia',
+    'memdb.py — autoglia',
+    'stats.py — autoglia',
+  ];
+
+  // Each scenario is an array of segments.
+  // type: 'cmd' | 'out' | 'blank' | 'pause'
+  // For 'out', spans is an array of {text, cls} where cls is a CSS class or ''
+  const SCENARIOS = [
+    // 0 — Context Recovery
+    [
+      {type:'cmd', text:'python3 ~/clawd/skills/memory-db/recover.py'},
+      {type:'blank'},
+      {type:'out', spans:[{text:'[2026-03-01 14:47] ', cls:'t-dim'},{text:'Checking for context compaction...', cls:''}]},
+      {type:'pause', ms:400},
+      {type:'out', spans:[{text:'✓ ', cls:'t-green'},{text:'Compaction detected — transcript gap found in active session', cls:''}]},
+      {type:'out', spans:[{text:'  Querying database...', cls:'t-dim'}]},
+      {type:'pause', ms:300},
+      {type:'out', spans:[{text:'  conversation_log:  ', cls:'t-dim'},{text:'31 sessions', cls:'t-cyan'},{text:' | last checkpoint 2h ago', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  contacts:         ', cls:'t-dim'},{text:'38 contacts', cls:'t-cyan'},{text:' | Alex Rivera last seen Feb 28', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  tasks:            ', cls:'t-dim'},{text:'5 open', cls:'t-cyan'},{text:' (2 high priority)', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  knowledge:        ', cls:'t-dim'},{text:'142 facts', cls:'t-cyan'},{text:' across 14 topics', cls:'t-dim'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'─────────────────────────────────────────────', cls:'t-rule'}]},
+      {type:'out', spans:[{text:'  CONTEXT RESTORED', cls:'t-green'}]},
+      {type:'out', spans:[{text:'─────────────────────────────────────────────', cls:'t-rule'}]},
+      {type:'out', spans:[{text:'  Last session:   ', cls:'t-dim'},{text:'Q1 launch prep (Mar 1, 12:30 PM)', cls:''}]},
+      {type:'out', spans:[{text:'  Open tasks:     ', cls:'t-dim'},{text:'Draft 3 posts · Review pricing strategy', cls:''}]},
+      {type:'out', spans:[{text:'  Decisions made: ', cls:'t-dim'},{text:'Twitter-first rollout · $19 launch price', cls:''}]},
+      {type:'out', spans:[{text:'  Contacts:       ', cls:'t-dim'},{text:'Alex Rivera', cls:'t-purple'},{text:' (Acme Corp) · ', cls:'t-dim'},{text:'Morgan Chen', cls:'t-purple'}]},
+      {type:'out', spans:[{text:'─────────────────────────────────────────────', cls:'t-rule'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'→ ', cls:'t-cyan'},{text:'Ready to continue. Your agent remembers everything.', cls:'t-green'}]},
+    ],
+    // 1 — Contact Lookup
+    [
+      {type:'cmd', text:'python3 ~/clawd/skills/memory-db/memdb.py query contacts --name "Alex"'},
+      {type:'blank'},
+      {type:'out', spans:[{text:'Found 1 contact matching ', cls:'t-dim'},{text:'"Alex"', cls:'t-cyan'},{text:':', cls:'t-dim'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'  Name:          ', cls:'t-dim'},{text:'Alex Rivera', cls:'t-purple'}]},
+      {type:'out', spans:[{text:'  Role:          ', cls:'t-dim'},{text:'Product Lead', cls:''}]},
+      {type:'out', spans:[{text:'  Company:       ', cls:'t-dim'},{text:'Acme Corp', cls:''}]},
+      {type:'out', spans:[{text:'  Context:       ', cls:'t-dim'},{text:'Interested in API integrations', cls:''}]},
+      {type:'out', spans:[{text:'  Last contact:  ', cls:'t-dim'},{text:'2026-02-28', cls:'t-cyan'}]},
+      {type:'out', spans:[{text:'  Tags:          ', cls:'t-dim'},{text:'Q1-outreach, decision-maker', cls:''}]},
+      {type:'out', spans:[{text:'  Notes:         ', cls:'t-dim'},{text:'Prefers async. Schedule follow-up for March.', cls:''}]},
+      {type:'out', spans:[{text:'  Outreach sent: ', cls:'t-dim'},{text:'3 messages', cls:'t-cyan'},{text:' · last reply Feb 24', cls:'t-dim'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'Query: 0.003s', cls:'t-dim'},{text:' | 1 row from contacts table', cls:'t-dim'}]},
+    ],
+    // 2 — Memory Stats
+    [
+      {type:'cmd', text:'python3 ~/clawd/skills/memory-db/stats.py'},
+      {type:'blank'},
+      {type:'out', spans:[{text:'Autoglia Memory — Health Report', cls:'t-cyan'},{text:' (2026-03-01 14:47)', cls:'t-dim'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'  Table                 Rows    Last Activity', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  ─────────────────────────────────────────', cls:'t-rule'}]},
+      {type:'out', spans:[{text:'  contacts                ', cls:'t-dim'},{text:'38', cls:'t-cyan'},{text:'    2026-02-28', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  projects                ', cls:'t-dim'},{text:' 7', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  tasks                  ', cls:'t-dim'},{text:'23', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  knowledge             ', cls:'t-dim'},{text:'142', cls:'t-cyan'},{text:'    2026-02-27', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  conversation_log       ', cls:'t-dim'},{text:'31', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  transcripts           ', cls:'t-dim'},{text:'847', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  ─────────────────────────────────────────', cls:'t-rule'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'  Unsummarized sessions:  ', cls:'t-dim'},{text:'0', cls:'t-green'},{text:' (clean)', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  Last auto-checkpoint:   ', cls:'t-dim'},{text:'2026-03-01 14:00', cls:'t-cyan'},{text:' (47 min ago)', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  DB size:               ', cls:'t-dim'},{text:'2.1 MB', cls:''}]},
+      {type:'out', spans:[{text:'  Integrity check:       ', cls:'t-dim'},{text:'ok', cls:'t-green'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'✓ ', cls:'t-green'},{text:'Memory is healthy. Nothing missing.', cls:''}]},
+    ],
+  ];
+
+  let currentScenario = 0;
+  let animTimer = null;
+  let charTimer = null;
+
+  function el(id) { return document.getElementById(id); }
+
+  function makeSpan(text, cls) {
+    if (!cls) return document.createTextNode(text);
+    const s = document.createElement('span');
+    s.className = cls;
+    s.textContent = text;
+    return s;
+  }
+
+  function clearTimers() {
+    if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+    if (charTimer) { clearTimeout(charTimer); charTimer = null; }
+  }
+
+  function typeText(container, text, speed, done) {
+    let i = 0;
+    function tick() {
+      if (i >= text.length) { done && done(); return; }
+      container.appendChild(document.createTextNode(text[i++]));
+      charTimer = setTimeout(tick, speed);
+    }
+    tick();
+  }
+
+  function runSegments(segments, idx) {
+    if (idx >= segments.length) {
+      // Append final cursor
+      const body = el('terminal-body');
+      body.appendChild(document.createTextNode('\n'));
+      const cur = document.createElement('span');
+      cur.className = 'terminal-cursor';
+      body.appendChild(cur);
+      scrollBottom();
+      return;
+    }
+    const seg = segments[idx];
+    const body = el('terminal-body');
+    const next = () => { animTimer = setTimeout(() => runSegments(segments, idx + 1), 30); };
+
+    if (seg.type === 'blank') {
+      body.appendChild(document.createTextNode('\n'));
+      scrollBottom();
+      next();
+    } else if (seg.type === 'pause') {
+      animTimer = setTimeout(() => runSegments(segments, idx + 1), seg.ms);
+    } else if (seg.type === 'cmd') {
+      // Prompt
+      body.appendChild(makeSpan('$ ', 't-green'));
+      // Type the command
+      const cmdNode = makeSpan('', 't-cyan');
+      body.appendChild(cmdNode);
+      typeText(cmdNode, seg.text, 28, () => {
+        body.appendChild(document.createTextNode('\n'));
+        scrollBottom();
+        animTimer = setTimeout(() => runSegments(segments, idx + 1), 200);
+      });
+    } else if (seg.type === 'out') {
+      const line = document.createElement('span');
+      seg.spans.forEach(s => line.appendChild(makeSpan(s.text, s.cls)));
+      body.appendChild(line);
+      body.appendChild(document.createTextNode('\n'));
+      scrollBottom();
+      animTimer = setTimeout(() => runSegments(segments, idx + 1), 55);
+    }
+  }
+
+  function scrollBottom() {
+    const body = el('terminal-body');
+    body.scrollTop = body.scrollHeight;
+  }
+
+  window.runScenario = function(idx, btn) {
+    clearTimers();
+    currentScenario = idx;
+
+    // Update buttons
+    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    // Update title
+    el('terminal-title').textContent = TITLES[idx];
+
+    // Clear terminal
+    el('terminal-body').innerHTML = '';
+
+    // Start animation
+    animTimer = setTimeout(() => runSegments(SCENARIOS[idx], 0), 120);
+  };
+
+  window.replayScenario = function() {
+    const active = document.querySelector('.scenario-btn.active');
+    runScenario(currentScenario, active);
+  };
+
+  // Auto-play scenario 0 on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(() => runScenario(0, document.querySelector('.scenario-btn')), 800));
+  } else {
+    setTimeout(() => runScenario(0, document.querySelector('.scenario-btn')), 800);
+  }
+})();
+</script>
 
 <!-- ── WHAT'S IN THE ZIP ── -->
 <section>
