@@ -7,7 +7,9 @@
   <meta name="description" content="Persistent SQLite memory for your OpenClaw agent. Automatic recording, context recovery, and a full web dashboard. One-time purchase, no subscription, no cloud.">
   <meta property="og:title" content="Autoglia — The Memory That Runs Itself">
   <meta property="og:description" content="Give your OpenClaw agent a real brain. 18-table SQLite database, automatic recording, and context recovery that works even when the AI doesn't.">
-  <meta property="og:image" content="assets/autoglia-logo-astrocyte.png">
+  <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
+  <meta property="og:url" content="https://autoglia.com">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -741,12 +743,12 @@
     <div class="feature-card">
       <div class="feat-icon">🔄</div>
       <h4>Auto-Checkpoint</h4>
-      <p>Hourly cron job summarizes every unsummarized conversation automatically. No agent needed. Never miss a session.</p>
+      <p>Hourly cron job captures message snippets from every unsummarized session — no API call, no agent needed. The safety net that ensures nothing is ever lost.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">⚡</div>
       <h4>Context Recovery</h4>
-      <p>Detects compaction, reads the database, and hands your agent a full context restore block. Picks up mid-conversation.</p>
+      <p>Detects when OpenClaw's session context has been compacted by checking JSONL transcript gaps, reads the database, and hands your agent a full context restore block. Picks up mid-conversation.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">📊</div>
@@ -896,7 +898,7 @@
       {type:'blank'},
       {type:'out', spans:[{text:'[2026-03-01 14:47] ', cls:'t-dim'},{text:'Checking for context compaction...', cls:''}]},
       {type:'pause', ms:400},
-      {type:'out', spans:[{text:'✓ ', cls:'t-green'},{text:'Compaction detected — transcript gap found in active session', cls:''}]},
+      {type:'out', spans:[{text:'✓ ', cls:'t-green'},{text:'Compaction detected — JSONL transcript gap in OpenClaw session', cls:''}]},
       {type:'out', spans:[{text:'  Querying database...', cls:'t-dim'}]},
       {type:'pause', ms:300},
       {type:'out', spans:[{text:'  conversation_log:  ', cls:'t-dim'},{text:'31 sessions', cls:'t-cyan'},{text:' | last checkpoint 2h ago', cls:'t-dim'}]},
@@ -1146,7 +1148,7 @@
     </details>
     <details>
       <summary>What if my agent doesn't save things during a conversation?</summary>
-      <p>That's exactly what Autoglia is designed for. <code>sync-sessions.py</code> pulls transcripts directly from OpenClaw's own JSONL files — it doesn't rely on the agent doing anything. And <code>auto-checkpoint.py</code> summarizes them on schedule. Nothing is lost even when the agent is uncooperative.</p>
+        <p>That's exactly what Autoglia is designed for. <code>sync-sessions.py</code> pulls transcripts directly from OpenClaw's own JSONL files — it doesn't rely on the agent doing anything. And <code>auto-checkpoint.py</code> captures message snippets on schedule with zero API calls. Nothing is lost even when the agent is uncooperative.</p>
     </details>
     <details>
       <summary>What if I have a technical issue?</summary>
