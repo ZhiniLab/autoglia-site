@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why I Built Autoglia — Matt</title>
+  <meta name="description" content="A personal story about AI memory, broken flat files, and why structured SQLite storage changes everything for OpenClaw users.">
+  <meta property="og:title" content="Why I Built Autoglia: Memory That Remembers Without Changing Who You Are">
+  <meta property="og:description" content="A personal story about AI memory, broken flat files, and why structured SQLite storage changes everything.">
+  <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
+  <meta property="og:url" content="https://autoglia.com/why-i-built">
+  <meta property="og:type" content="article">
+  <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07070f;
+      --bg2:       #0d0d1c;
+      --bg3:       #12122a;
+      --cyan:      #00d4ff;
+      --cyan-dim:  #00d4ff33;
+      --purple:    #7c3aed;
+      --text:      #f0f4ff;
+      --muted:     #8892a4;
+      --border:    #1e2040;
+      --success:   #10b981;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(7,7,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 34px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--cyan); color: #000;
+      font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.25rem; border-radius: 6px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── POST LAYOUT ── */
+    .post-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 5rem 2rem 6rem;
+    }
+
+    /* ── POST HEADER ── */
+    .post-back {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--muted); text-decoration: none; font-size: 0.85rem;
+      margin-bottom: 2.5rem; transition: color 0.2s;
+    }
+    .post-back:hover { color: var(--text); }
+
+    .post-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 1rem;
+    }
+
+    .post-title {
+      font-size: clamp(1.9rem, 5vw, 2.75rem);
+      font-weight: 800; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    .post-meta {
+      display: flex; align-items: center; gap: 1rem;
+      color: var(--muted); font-size: 0.85rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.75rem;
+    }
+    .post-meta .sep { opacity: 0.4; }
+
+    /* ── PROSE ── */
+    .prose h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+      margin: 2.5rem 0 0.85rem;
+      color: var(--text);
+    }
+
+    .prose p {
+      color: #c8d0e0;
+      font-size: 1.05rem;
+      line-height: 1.78;
+      margin-bottom: 1.25rem;
+    }
+
+    .prose ul, .prose ol {
+      margin: 0 0 1.25rem 1.25rem;
+    }
+    .prose ul li, .prose ol li {
+      color: #c8d0e0;
+      font-size: 1.05rem;
+      line-height: 1.78;
+      margin-bottom: 0.4rem;
+    }
+    .prose ul li strong, .prose ol li strong {
+      color: var(--text);
+    }
+
+    .prose em { font-style: italic; color: var(--text); }
+
+    .prose strong { font-weight: 600; color: var(--text); }
+
+    .prose code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: var(--bg3);
+      color: var(--cyan);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    /* Callout block */
+    .callout {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--cyan);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+    }
+    .callout p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .callout p strong { color: var(--text); }
+
+    /* List block with visual treatment */
+    .split-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+    @media(max-width: 560px){ .split-list { grid-template-columns: 1fr; } }
+    .split-col {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .split-col .col-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+      color: var(--muted);
+    }
+    .split-col.good .col-label { color: var(--cyan); }
+    .split-col ul { margin: 0; list-style: none; }
+    .split-col li {
+      color: var(--muted) !important;
+      font-size: 0.9rem !important;
+      line-height: 1.65 !important;
+      margin-bottom: 0.4rem !important;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .split-col li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-size: 0.75rem; }
+    .split-col li strong { color: var(--text) !important; }
+
+    /* Divider */
+    .prose hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* Signature */
+    .signature {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .signature strong { color: var(--text); }
+
+    /* ── CTA BOX ── */
+    .post-cta {
+      margin-top: 3.5rem;
+      background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05));
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 16px;
+      padding: 2.25rem 2.5rem;
+      text-align: center;
+    }
+    .post-cta h3 {
+      font-size: 1.25rem; font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .post-cta p {
+      color: var(--muted); font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--cyan); color: #000;
+      font-weight: 800; font-size: 1rem;
+      padding: 0.85rem 2rem; border-radius: var(--radius);
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .post-cta .cta-note {
+      margin-top: 0.85rem;
+      color: var(--muted); font-size: 0.8rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem; text-align: center;
+      color: var(--muted); font-size: 0.85rem;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    .footer-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .footer-logo img { height: 32px; width: auto; }
+
+    @media(max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .post-wrap { padding: 3rem 1.25rem 4rem; }
+      .post-cta { padding: 1.75rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+  </a>
+  <div class="nav-links">
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="index.html#security">Security</a>
+    <a href="index.html#features">Features</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#faq">FAQ</a>
+    <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
+  </div>
+</nav>
+
+<!-- ── POST ── -->
+<div class="post-wrap">
+
+  <a class="post-back" href="index.html">← Back to autoglia.com</a>
+
+  <div class="post-label">Founder's Note</div>
+  <h1 class="post-title">Why I Built Autoglia: Memory That Remembers Without Changing Who You Are</h1>
+
+  <div class="post-meta">
+    <span>Matt</span>
+    <span class="sep">·</span>
+    <span>March 2026</span>
+    <span class="sep">·</span>
+    <span>5 min read</span>
+  </div>
+
+  <div class="prose">
+
+    <h2>The Problem</h2>
+
+    <p>I've been using OpenClaw every day to solve all sorts of problems that arise in product development, research, and increasingly life. Probably like you — it's become a constantly relied upon partner.</p>
+
+    <p>There have been some issues though. The main ones arise when the context window fills up and then — compaction. It can be frustrating to be in the middle of an idea, and then...poof, everything is gone. You assume it has been retained somewhere, but no, it's gone. My previously unassailable companion doesn't know who I am. It doesn't remember what we were working on. It doesn't know my contacts, my projects, my preferences.</p>
+
+    <p>And I realized: the AI can be incredibly smart, but without memory, it's always starting from zero.</p>
+
+    <h2>The Breaking Point</h2>
+
+    <p>One of the first things I used OpenClaw for was tracking my son's movie watching and book reading history. I told OpenClaw to remember each entry. But one day:</p>
+
+    <ul>
+      <li>I'd ask for an alphabetical list — it created separate files, each with partial lists.</li>
+      <li>I'd ask to count the movies — the numbers never matched.</li>
+      <li>I'd ask to build a website with the movies — different counts, different inconsistencies.</li>
+    </ul>
+
+    <p>The AI was trying its best, but without structured memory, the data drifted. Files became inconsistent. Truth became whatever the last response was.</p>
+
+    <p>That's when I knew: flat files weren't enough. So I built something that could actually remember — reliably, consistently, forever.</p>
+
+    <h2>What I Built</h2>
+
+    <p>Autoglia is a local memory layer for OpenClaw. It runs on your machine, stores everything in SQLite, and persists across sessions.</p>
+
+    <p>But here's what makes it different: <strong>it doesn't change your bot's personality.</strong></p>
+
+    <p>Your OpenClaw still uses skills, heartbeat, memory files, soul files — all the things that make it yours. Autoglia just adds structured memory on top.</p>
+
+    <p>And your bot can <em>learn</em> from that database. Every conversation, every project, every interaction — stored in a way that's queryable. Want your bot to know about a new project? It reads from the database. Want it to remember something for next time? It's already there.</p>
+
+    <h2>Why Tables Matter</h2>
+
+    <p>Flat files (JSON, Markdown) are great for some things. But they have limits:</p>
+
+    <div class="split-list">
+      <div class="split-col">
+        <div class="col-label">Flat files</div>
+        <ul>
+          <li>Hard to search across thousands of entries</li>
+          <li>No relationships between facts</li>
+          <li>Easy to lose context</li>
+          <li>No structure = no reliability</li>
+        </ul>
+      </div>
+      <div class="split-col good">
+        <div class="col-label">SQLite tables</div>
+        <ul>
+          <li><strong>Relationships</strong> — contacts linked to projects to conversations</li>
+          <li><strong>Queryable</strong> — "what was I working on last week?"</li>
+          <li><strong>Reliable</strong> — structured data that doesn't drift</li>
+          <li><strong>Fast</strong> — instant retrieval</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>But the key point: <strong>your bot's personality still comes from its skills and soul files.</strong> Autoglia provides the <em>context</em> — who you are, what you do, what you prefer — without overriding how your bot behaves.</p>
+
+    <h2>Real Use Cases</h2>
+
+    <p>My wife is a perfect example. She logs:</p>
+
+    <ul>
+      <li>Food and nutrition tracking</li>
+      <li>Family events and milestones</li>
+      <li>Dreams she's had</li>
+      <li>Psychology, archetypes, concepts she's studying</li>
+      <li>Stories she's writing</li>
+      <li>Essentially: her entire life, structured</li>
+    </ul>
+
+    <p>The result? She uses her OpenClaw assistant for things she never would have before. Because the AI <em>knows</em> her context, her interests, her history.</p>
+
+    <p>That's the power of persistent, structured memory. It enables use cases that simply wouldn't work otherwise.</p>
+
+    <h2>Trust</h2>
+
+    <p>Everything runs locally. Your data never leaves your machine. No cloud, no subscription, no one else has access.</p>
+
+    <p>This matters for two reasons:</p>
+
+    <ol>
+      <li><strong>Privacy</strong> — your conversations, your contacts, your work — all on your hardware.</li>
+      <li><strong>Reliability</strong> — it works even when offline. No dependencies.</li>
+    </ol>
+
+    <h2>The Vision: Your AI Remembers You</h2>
+
+    <p>I don't think of Autoglia as a product. I think of it as a building block for something bigger.</p>
+
+    <p>People want to develop a relationship with their AI. Even if not emotional — definitely from a productivity standpoint. You want something that <em>understands</em> you, your context, what you want. That makes everything faster. <strong>The tighter the relationship, the more useful it becomes.</strong></p>
+
+    <p>As time goes on, you'll want your AI to do more in your life. Handle more tasks. Know more about you. That relationship gets tighter and tighter.</p>
+
+    <div class="callout">
+      <p><strong>Those memories, that personality that develops — you'll want to transfer them to future models.</strong> This isn't just about today. It's about building a foundation. Your AI remembers who you are now, so when models improve, the context transfers.</p>
+    </div>
+
+    <p>Eventually, I want Autoglia to work with NullClaw and other agents — not just memory, but <em>learning</em>. Structured data that helps your bot get better over time. But for now, it solves one real problem: my assistant forgets everything, and I wanted it to remember.</p>
+
+    <hr>
+
+    <div class="signature">
+      <p>If that resonates — try it. It's $19, one-time. And honestly? I'd love your feedback. Is this useful for you too?</p>
+      <p style="margin-top:1rem;"><strong>— Matt</strong></p>
+    </div>
+
+  </div>
+
+  <!-- ── CTA ── -->
+  <div class="post-cta">
+    <h3>Give your OpenClaw a real brain.</h3>
+    <p>18-table SQLite memory, automatic recording, and context recovery. One-time purchase. Runs entirely on your machine.</p>
+    <a class="btn-primary" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
+    <p class="cta-note">No subscription · No cloud · Introductory price — raises to $29</p>
+  </div>
+
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+  </div>
+  <p>Built by <a href="#">ZhiniLab LLC</a> · <a href="mailto:support@autoglia.com">support@autoglia.com</a></p>
+  <p style="margin-top:0.5rem;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="index.html">Back to autoglia.com</a></p>
+  <p style="margin-top:1rem; font-size:0.75rem;">Autoglia is not affiliated with OpenClaw or Anthropic.</p>
+</footer>
+
+</body>
+</html>
