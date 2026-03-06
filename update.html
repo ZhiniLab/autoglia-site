@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Your Free Update — Autoglia v2.9.0</title>
+  <meta name="description" content="Already purchased Autoglia? Enter your email to get your free v2.9.0 update link.">
+  <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07070f;
+      --bg2:       #0d0d1c;
+      --bg3:       #12122a;
+      --cyan:      #00d4ff;
+      --cyan-dim:  #00d4ff33;
+      --purple:    #7c3aed;
+      --text:      #f0f4ff;
+      --muted:     #8892a4;
+      --border:    #1e2040;
+      --success:   #10b981;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+      background: rgba(7,7,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 34px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--cyan); color: #000;
+      font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.25rem; border-radius: 6px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 4rem 1.5rem;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 20px;
+      padding: 2.75rem 3rem;
+      max-width: 520px; width: 100%;
+      box-shadow: 0 0 60px rgba(0,212,255,0.05);
+    }
+
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.3);
+      color: var(--cyan); font-size: 0.75rem; font-weight: 700;
+      padding: 0.3rem 0.9rem; border-radius: 100px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .card-badge span {
+      width: 6px; height: 6px; background: var(--cyan);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    h1 {
+      font-size: 1.75rem; font-weight: 800;
+      line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+    .subtitle {
+      color: var(--muted); font-size: 0.95rem;
+      line-height: 1.65; margin-bottom: 2rem;
+    }
+
+    /* What's new list */
+    .whats-new {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .whats-new-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 0.65rem;
+    }
+    .whats-new ul { list-style: none; }
+    .whats-new li {
+      color: var(--muted); font-size: 0.85rem;
+      line-height: 1.65; padding-left: 1rem; position: relative;
+      margin-bottom: 0.2rem;
+    }
+    .whats-new li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-size: 0.75rem; }
+    .whats-new li strong { color: var(--text); }
+
+    /* Form */
+    .form-label {
+      display: block; font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 0.5rem; color: var(--text);
+    }
+    .form-row {
+      display: flex; gap: 0.6rem;
+    }
+    .form-input {
+      flex: 1;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.75rem 1rem;
+      color: var(--text); font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: rgba(0,212,255,0.5); }
+    .form-input::placeholder { color: var(--muted); }
+    .form-btn {
+      background: var(--cyan); color: #000;
+      font-weight: 800; font-size: 0.9rem;
+      padding: 0.75rem 1.5rem; border-radius: 8px;
+      border: none; cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .form-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .form-note {
+      margin-top: 0.65rem;
+      color: var(--muted); font-size: 0.78rem; line-height: 1.5;
+    }
+
+    /* State messages */
+    .msg {
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem; line-height: 1.6;
+      display: none;
+    }
+    .msg.success {
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: var(--success);
+    }
+    .msg.error {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      color: #f87171;
+    }
+    .msg.show { display: block; }
+
+    /* Divider */
+    .divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    .support-line {
+      color: var(--muted); font-size: 0.82rem; text-align: center;
+    }
+    .support-line a { color: var(--muted); }
+    .support-line a:hover { color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2rem; text-align: center;
+      color: var(--muted); font-size: 0.82rem;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @media(max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .card { padding: 2rem 1.5rem; }
+      .form-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+  </a>
+  <div class="nav-links">
+    <a href="index.html#features">Features</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="index.html#faq">FAQ</a>
+    <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <div class="card-badge"><span></span> Free update — v2.9.0</div>
+    <h1>Get your free update.</h1>
+    <p class="subtitle">Already a customer? Enter the email you used to purchase and we'll send you a fresh v2.9.0 download link instantly.</p>
+
+    <div class="whats-new">
+      <div class="whats-new-label">What's new in v2.9.0</div>
+      <ul>
+        <li><strong>Conversation segmentation</strong> — distinct conversations no longer merge into one summary</li>
+        <li><strong>Topic index</strong> — normalized, deduplicated, queryable by frequency</li>
+        <li><strong>Watchwords</strong> — keyword triggers with match counts</li>
+        <li><strong>Session analytics</strong> — behavioral stats per session, zero LLM</li>
+        <li><strong>Binary backup + email</strong> — "back up my database and email it to me"</li>
+        <li><strong>Full test suite</strong> — pytest coverage for every core script</li>
+      </ul>
+    </div>
+
+    <label class="form-label" for="email">Your purchase email</label>
+    <div class="form-row">
+      <input
+        id="email"
+        class="form-input"
+        type="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        inputmode="email"
+      >
+      <button class="form-btn" id="submit-btn" onclick="requestUpdate()">Send link →</button>
+    </div>
+    <p class="form-note">Link expires in 7 days · 5 downloads · Update via <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;background:var(--bg3);color:var(--cyan);padding:0.1rem 0.3rem;border-radius:3px;">python3 migrate.py</code></p>
+
+    <div class="msg success" id="msg-success">
+      ✓ If that email is on record, a download link is on its way. Check your inbox (and spam folder just in case).
+    </div>
+    <div class="msg error" id="msg-error">
+      Something went wrong — please try again or email <a href="mailto:support@autoglia.com" style="color:#f87171;">support@autoglia.com</a>.
+    </div>
+
+    <hr class="divider">
+    <p class="support-line">
+      Not finding the email? <a href="mailto:support@autoglia.com">support@autoglia.com</a> — we'll sort it out.
+    </p>
+  </div>
+</main>
+
+<footer>
+  <p>
+    <a href="index.html">autoglia.com</a> ·
+    <a href="changelog.html">Changelog</a> ·
+    <a href="mailto:support@autoglia.com">support@autoglia.com</a>
+  </p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;">ZhiniLab LLC · Autoglia is not affiliated with OpenClaw or Anthropic.</p>
+</footer>
+
+<script>
+  const RESEND_URL = 'https://glvtzkqzzpaxcczxrhks.supabase.co/functions/v1/resend'
+
+  async function requestUpdate() {
+    const emailEl = document.getElementById('email')
+    const btn     = document.getElementById('submit-btn')
+    const ok      = document.getElementById('msg-success')
+    const err     = document.getElementById('msg-error')
+
+    const email = emailEl.value.trim()
+    if (!email || !email.includes('@')) {
+      emailEl.focus()
+      return
+    }
+
+    btn.disabled  = true
+    btn.textContent = 'Sending…'
+    ok.classList.remove('show')
+    err.classList.remove('show')
+
+    try {
+      const res = await fetch(RESEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      if (res.ok) {
+        ok.classList.add('show')
+        emailEl.value = ''
+      } else {
+        err.classList.add('show')
+      }
+    } catch {
+      err.classList.add('show')
+    } finally {
+      btn.disabled    = false
+      btn.textContent = 'Send link →'
+    }
+  }
+
+  // Allow Enter key to submit
+  document.getElementById('email').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') requestUpdate()
+  })
+</script>
+
+</body>
+</html>
