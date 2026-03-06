@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog — Autoglia</title>
+  <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
+  <meta property="og:title" content="Autoglia Changelog">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.9.0 — conversation segmentation, topic index, watchwords, session analytics, and binary backup with email delivery.">
+  <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
+  <meta property="og:url" content="https://autoglia.com/changelog">
+  <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #07070f;
+      --bg2:       #0d0d1c;
+      --bg3:       #12122a;
+      --cyan:      #00d4ff;
+      --cyan-dim:  #00d4ff33;
+      --purple:    #7c3aed;
+      --text:      #f0f4ff;
+      --muted:     #8892a4;
+      --border:    #1e2040;
+      --success:   #10b981;
+      --warning:   #f59e0b;
+      --radius:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(7,7,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 34px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--cyan); }
+    .nav-cta {
+      background: var(--cyan); color: #000;
+      font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.25rem; border-radius: 6px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 900px; margin: 0 auto;
+      padding: 4rem 2rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+    .page-title {
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+    }
+    .page-sub {
+      color: var(--muted); font-size: 1rem; max-width: 520px;
+    }
+
+    /* ── LAYOUT ── */
+    .cl-wrap {
+      max-width: 900px; margin: 0 auto;
+      padding: 3.5rem 2rem 6rem;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 0 3rem;
+      align-items: start;
+    }
+    @media(max-width: 700px) {
+      .cl-wrap { grid-template-columns: 1fr; gap: 0; }
+    }
+
+    /* ── SIDEBAR / VERSION INDEX ── */
+    .cl-sidebar {
+      position: sticky; top: 80px;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    @media(max-width: 700px) {
+      .cl-sidebar { display: none; }
+    }
+    .cl-sidebar-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .cl-sidebar a {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px; text-decoration: none;
+      font-size: 0.82rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--muted); transition: all 0.15s;
+    }
+    .cl-sidebar a:hover { color: var(--text); background: var(--bg2); }
+    .cl-sidebar a.latest { color: var(--cyan); }
+    .cl-sidebar-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+      background: var(--border);
+    }
+    .cl-sidebar a.latest .cl-sidebar-dot { background: var(--cyan); }
+
+    /* ── ENTRIES ── */
+    .cl-entries { display: flex; flex-direction: column; }
+
+    .cl-entry {
+      padding-bottom: 3.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 3.5rem;
+    }
+    .cl-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+    /* Version header */
+    .cl-version-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 0.5rem; flex-wrap: wrap;
+    }
+    .cl-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem; font-weight: 600;
+      color: var(--text); letter-spacing: -0.02em;
+    }
+    .cl-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 0.25rem 0.7rem;
+      border-radius: 100px;
+    }
+    .cl-badge.latest {
+      background: var(--cyan-dim); color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.3);
+    }
+    .cl-badge.major {
+      background: rgba(124,58,237,0.15); color: #a78bfa;
+      border: 1px solid rgba(124,58,237,0.3);
+    }
+    .cl-date {
+      color: var(--muted); font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Why this matters callout */
+    .cl-why {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--cyan);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.1rem 1.35rem;
+      margin-bottom: 1.5rem;
+    }
+    .cl-why-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 0.4rem;
+    }
+    .cl-why p {
+      color: var(--muted); font-size: 0.9rem; line-height: 1.7;
+    }
+    .cl-why p strong { color: var(--text); }
+
+    /* Change sections */
+    .cl-section { margin-bottom: 1.25rem; }
+    .cl-section:last-child { margin-bottom: 0; }
+
+    .cl-section-label {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.25rem 0.75rem;
+      border-radius: 100px; margin-bottom: 0.75rem;
+    }
+    .cl-section-label.added   { background: rgba(0,212,255,0.1);  color: var(--cyan);    border: 1px solid rgba(0,212,255,0.25); }
+    .cl-section-label.changed { background: rgba(124,58,237,0.1); color: #a78bfa;        border: 1px solid rgba(124,58,237,0.3); }
+    .cl-section-label.fixed   { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.25); }
+
+    .cl-items {
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+
+    .cl-item {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 0.8rem 1rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; transition: border-color 0.15s;
+    }
+    .cl-item:hover { border-color: rgba(0,212,255,0.2); }
+
+    .cl-item-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--cyan);
+      background: var(--bg3);
+      padding: 0.1rem 0.45rem; border-radius: 4px;
+      white-space: nowrap; flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .cl-item-tag.none { display: none; }
+
+    .cl-item-text {
+      font-size: 0.88rem; color: #c0cae0; line-height: 1.6;
+    }
+    .cl-item-text strong { color: var(--text); }
+    .cl-item-text code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em; background: var(--bg3);
+      color: var(--cyan); padding: 0.1rem 0.35rem; border-radius: 3px;
+    }
+
+    /* Small change list (for minor versions) */
+    .cl-simple-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .cl-simple-list li {
+      display: flex; gap: 0.6rem; align-items: flex-start;
+      font-size: 0.88rem; color: #c0cae0; line-height: 1.6;
+    }
+    .cl-simple-list li::before {
+      content: '→'; color: var(--cyan);
+      font-size: 0.8rem; flex-shrink: 0; margin-top: 0.2rem;
+    }
+    .cl-simple-list code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em; background: var(--bg3);
+      color: var(--cyan); padding: 0.1rem 0.35rem; border-radius: 3px;
+    }
+    .cl-simple-list strong { color: var(--text); }
+
+    /* ── CTA ── */
+    .page-cta {
+      max-width: 900px; margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    .page-cta-inner {
+      background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05));
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 16px;
+      padding: 2.25rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .page-cta-inner h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .page-cta-inner p { color: var(--muted); font-size: 0.9rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--cyan); color: #000;
+      font-weight: 800; font-size: 0.95rem;
+      padding: 0.8rem 1.75rem; border-radius: var(--radius);
+      text-decoration: none; white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem; text-align: center;
+      color: var(--muted); font-size: 0.85rem;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    .footer-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .footer-logo img { height: 32px; width: auto; }
+
+    @media(max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .page-header { padding: 3rem 1.25rem 2rem; }
+      .cl-wrap { padding: 2.5rem 1.25rem 4rem; }
+      .page-cta { padding: 0 1.25rem; }
+      .page-cta-inner { padding: 1.75rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+  </a>
+  <div class="nav-links">
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="index.html#security">Security</a>
+    <a href="index.html#features">Features</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#faq">FAQ</a>
+    <a href="changelog.html" class="active">Changelog</a>
+    <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
+  </div>
+</nav>
+
+<!-- ── PAGE HEADER ── -->
+<div class="page-header">
+  <div class="page-label">Version History</div>
+  <h1 class="page-title">Changelog</h1>
+  <p class="page-sub">Every release, every change. Customers get all updates included — update anytime via <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;background:var(--bg3);color:var(--cyan);padding:0.15rem 0.4rem;border-radius:4px;">python3 migrate.py</code>.</p>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="cl-wrap">
+
+  <!-- Sidebar index -->
+  <nav class="cl-sidebar">
+    <div class="cl-sidebar-title">Versions</div>
+    <a href="#v290" class="latest"><span class="cl-sidebar-dot"></span>v2.9.0</a>
+    <a href="#v280"><span class="cl-sidebar-dot"></span>v2.8.0</a>
+    <a href="#v270"><span class="cl-sidebar-dot"></span>v2.7.0</a>
+    <a href="#v260"><span class="cl-sidebar-dot"></span>v2.6.0</a>
+    <a href="#v250"><span class="cl-sidebar-dot"></span>v2.5.0</a>
+    <a href="#v240"><span class="cl-sidebar-dot"></span>v2.4.0</a>
+    <a href="#v230"><span class="cl-sidebar-dot"></span>v2.3.0</a>
+    <a href="#v220"><span class="cl-sidebar-dot"></span>v2.2.0</a>
+    <a href="#v210"><span class="cl-sidebar-dot"></span>v2.1.0</a>
+    <a href="#v200"><span class="cl-sidebar-dot"></span>v2.0.0</a>
+    <a href="#v100"><span class="cl-sidebar-dot"></span>v1.0.0</a>
+  </nav>
+
+  <!-- Entries -->
+  <div class="cl-entries">
+
+    <!-- ── v2.9.0 ── -->
+    <div class="cl-entry" id="v290">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.9.0</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">March 6, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>Before v2.9.0, a Discord channel's entire history lived under one session key forever. If you talked Monday then again Thursday, auto-checkpoint merged both into one muddled summary. <strong>Segmentation fixes this</strong> — each gap becomes a boundary, each conversation gets its own checkpoint, topic, and analytics row. Recovery is now scoped to the right conversation. The topic index and watchwords make the whole system queryable in ways that weren't possible before. And for the first time, you can ask your bot to back up and email your entire database in one sentence.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">auto-checkpoint</span>
+            <span class="cl-item-text"><strong>Conversation segmentation</strong> — messages separated by more than N minutes (default 30) are treated as distinct conversations. Each segment gets its own topic and contributes a separate line to the summary. Configurable via <code>--gap-minutes</code>.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>conversation_topics</code></strong> — normalized topic registry. Every unique topic is stored once, deduplicated case-insensitively, with a <code>use_count</code> so frequently-discussed subjects surface naturally.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>conversation_topic_links</code></strong> — many-to-many join between <code>conversation_log</code> entries and <code>conversation_topics</code>. One checkpoint can now be tagged with multiple topics. Query "all sessions that discussed X" instead of guessing with substring search.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>watchwords</code></strong> — keyword trigger registry. Store phrases with associated actions (<code>checkpoint</code>, <code>tag_topic</code>, <code>flag</code>). Check a message for hits via <code>memdb.py check-watchwords</code> — returns matches and increments <code>match_count</code>. Implemented at the Python layer where natural language processing actually belongs.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>session_stats</code></strong> — per-session behavioral analytics written automatically after each checkpoint. Tracks <code>message_count</code>, <code>user_messages</code>, <code>bot_messages</code>, <code>duration_minutes</code>, <code>avg_gap_minutes</code>, and <code>topics_json</code>. Zero LLM involvement.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memdb.py</span>
+            <span class="cl-item-text">New commands: <code>topics</code> — list all conversation topics ordered by use count. <code>watchwords [--all]</code> — list active or all watchwords. <code>check-watchwords "&lt;text&gt;"</code> — scan a message for hits. <code>backup [dest.db]</code> — binary database backup. <code>export [dest.json]</code> — JSON export.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">export.py</span>
+            <span class="cl-item-text"><strong>Binary backup &amp; restore</strong> — <code>--backup dest.db</code> uses SQLite's online backup API: safe while the database is open, lossless, complete. <code>--restore src.db [--force]</code> restores from a binary backup. <code>--email-to address</code> emails the backup file via mutt, sendmail, or smtplib (configurable via env vars). Users can ask their bot: "back up my database and email it to me."</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">import.py</span>
+            <span class="cl-item-text"><strong><code>--overwrite</code> flag</strong> for JSON restore — clears all tables in reverse FK order, then reinserts using <code>INSERT OR REPLACE</code> in dependency order. Tables now inserted in a defined FK-safe sequence (parents before children). Default behavior unchanged: merge via <code>INSERT OR IGNORE</code>.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">tests/</span>
+            <span class="cl-item-text"><strong>pytest test suite</strong> — 5 test files covering <code>memdb.py</code>, <code>recover.py</code>, <code>checkpoint.py</code>, <code>auto-checkpoint.py</code>, and <code>sync-sessions.py</code>. Each test uses a fresh temporary DB via shared fixture. No personal data, no side effects on the real database.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">auto-checkpoint</span>
+            <span class="cl-item-text"><code>run_checkpoint()</code> now returns <code>(success, log_id)</code> so callers can link topics to the new <code>conversation_log</code> row immediately after creation.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">auto-checkpoint</span>
+            <span class="cl-item-text"><code>derive_summary_segmented()</code> replaces <code>derive_summary()</code>. Multiple segments produce a summary that lists each segment's time range, message count, and topic on a separate line.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">stats.py</span>
+            <span class="cl-item-text">Health report now includes top conversation topics and active watchwords. New tables appear in row-count table.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">setup.py</span>
+            <span class="cl-item-text">Version bumped to 2.9.0. New tables added to <code>CORE_TABLES</code> audit check. Fixed pre-existing <code>NameError</code> in <code>cmd_check()</code>. Added <code>stats.py</code> to required-file list.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">migrate.py</span>
+            <span class="cl-item-text">Migration v8 creates all four new tables with indexes on existing installs. Run <code>python3 migrate.py</code> to upgrade — existing data is untouched.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">SKILL.md</span>
+            <span class="cl-item-text">New "Backup &amp; Export" section with conversational triggers, step-by-step commands, email delivery instructions, and a what-to-say-to-the-user script. Backup behavior added to Auto-Memory Rules.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.8.0 ── -->
+    <div class="cl-entry" id="v280">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.8.0</span>
+      </div>
+      <div class="cl-date">February 26, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>v2.7.0 ensured raw transcripts are always recorded. But <code>conversation_log</code> checkpoints — the structured summaries <code>recover.py</code> uses — still depended on the bot voluntarily running <code>checkpoint.py</code> at the right moment. Under load or after context loss, it simply didn't. <strong><code>auto-checkpoint.py</code> + cron closes this loop</strong>: every conversation gets checkpointed on schedule, whether the bot cooperated or not.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">auto-checkpoint.py</span>
+            <span class="cl-item-text"><strong>Automatic conversation checkpointing with no LLM required.</strong> Finds sessions with unsummarized messages, generates topic and summary from actual message content, calls <code>checkpoint.py</code> atomically. Flags: <code>--threshold N</code>, <code>--all</code>, <code>--dry-run</code>, <code>--session</code>, <code>--quiet</code>, <code>--no-sync</code>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">setup.py</span>
+            <span class="cl-item-text">Install now registers an hourly clawdbot cron job (<code>clawdbot cron add</code>) that runs <code>auto-checkpoint.py --quiet</code> automatically. Job ID stored in the manifest for clean uninstall.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">SKILL.md</span>
+            <span class="cl-item-text">"Auto-Save Behavior" and "Checkpoint Protocol" sections rewritten to reflect the fully automated pipeline. The "every message" manual exec requirement removed.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.7.0 ── -->
+    <div class="cl-entry" id="v270">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.7.0</span>
+      </div>
+      <div class="cl-date">February 27, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>The previous approach relied on the LLM voluntarily saving transcripts on every message. Under load, mid-task, or in short Discord exchanges, the LLM skips it — leaving <code>conversation_transcripts</code> empty and <code>recover.py</code> with nothing to reconstruct from. <strong><code>sync-sessions.py</code> solves this at the infrastructure level.</strong> Context loss from compaction is now fully recoverable.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">sync-sessions.py</span>
+            <span class="cl-item-text"><strong>Infrastructure-level transcript sync.</strong> Reads clawdbot's JSONL session files and imports new messages into <code>conversation_transcripts</code>. Automatic dedup via <code>INSERT OR IGNORE</code>. Flags: <code>--status</code>, <code>--dry-run</code>, <code>--since 24h/7d</code>, <code>--agent NAME</code>. Graceful if clawdbot is not installed.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">migrate.py v6</span>
+            <span class="cl-item-text">Deduplicates <code>conversation_transcripts</code> then adds <code>UNIQUE INDEX</code> on <code>(session_key, timestamp, role)</code> to enable safe <code>INSERT OR IGNORE</code> upserts.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.6.0 ── -->
+    <div class="cl-entry" id="v260">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.6.0</span>
+      </div>
+      <div class="cl-date">February 27, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">dashboard.py</span>
+            <span class="cl-item-text"><strong>Local web dashboard</strong> at <code>http://localhost:5000</code>. Browse contacts, knowledge, projects, and conversations without writing SQL. Live updates via Server-Sent Events every 3 seconds. Tabs: Overview, Contacts, Knowledge, Projects, Conversations, Schema. <code>--open</code> flag auto-opens browser. Requires <code>pip install flask</code>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.5.0 ── -->
+    <div class="cl-entry" id="v250">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.5.0</span>
+      </div>
+      <div class="cl-date">February 27, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>_schema_log</code></strong> — permanent audit log for every user-created extension table. Stores action, object name, reason, session key, and timestamp.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memdb.py</span>
+            <span class="cl-item-text"><strong><code>create-table</code></strong> — the only correct way to create extension tables. Atomically creates the table, logs it to <code>_schema_log</code>, and bumps <code>user_schema_rev</code> in <code>_meta</code>. Replaces raw <code>exec CREATE TABLE</code>.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memdb.py</span>
+            <span class="cl-item-text"><strong><code>schema-log [limit]</code></strong> — view the full extension table audit trail.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.4.0 ── -->
+    <div class="cl-entry" id="v240">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.4.0</span>
+      </div>
+      <div class="cl-date">February 27, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">checkpoint.py</span>
+            <span class="cl-item-text"><strong>Atomic checkpoint script</strong> — saves a <code>conversation_log</code> entry AND marks transcripts as <code>is_summarized = 1</code> in one transaction. Keeps <code>recover.py</code>'s compaction detection accurate.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memdb.py</span>
+            <span class="cl-item-text"><strong><code>upsert</code> command</strong> — insert-or-update by key column. Prevents duplicate contacts. Usage: <code>memdb.py upsert contacts name '{"name": "...", "email": "..."}'</code>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label fixed">Fixed</div>
+        <ul class="cl-simple-list" style="padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;">
+          <li>Multiple <code>migrate.py</code> fixes: renamed <code>project_progress</code> → <code>projects</code>, ensured <code>preferences</code> and <code>bot_skills</code> exist on older installs</li>
+          <li><code>stats.py</code>: Fixed incorrect timestamp column mappings on <code>conversation_log</code>, <code>reminders</code>, <code>knowledge</code>, <code>meetings</code>, and <code>businesses</code></li>
+          <li><code>stats.py</code>: Now warns when unsummarized transcripts exist and suggests running <code>checkpoint.py</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── v2.3.0 ── -->
+    <div class="cl-entry" id="v230">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.3.0</span>
+      </div>
+      <div class="cl-date">February 26, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">setup.py</span>
+            <span class="cl-item-text"><strong>Full installer / uninstaller</strong> with pre-flight check, schema migration, AGENTS.md injection, workspace indexing, and cron registration. <code>--dry-run</code>, <code>--yes</code> flags. Python version gate, idempotent injection, conflict detection, atomic file writes, automatic backup, and rollback manifest at <code>~/.clawdbot/memory-db-install.json</code>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.2.0 ── -->
+    <div class="cl-entry" id="v220">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.2.0</span>
+      </div>
+      <div class="cl-date">February 27, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">import.py</span>
+            <span class="cl-item-text"><strong>Complete rewrite</strong> — now a proper workspace indexer. Scans entire workspace recursively, tracks file hashes in <code>memory_files</code> for idempotent re-runs, smart-classifies files (dated → <code>daily_log</code>, known files → <code>knowledge</code>), stores <code>source_file</code> path on every entry. <code>--dry-run</code> and <code>--force</code> flags. Files are never deleted or modified.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.1.0 ── -->
+    <div class="cl-entry" id="v210">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.1.0</span>
+      </div>
+      <div class="cl-date">February 27, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">recover.py</span>
+            <span class="cl-item-text"><strong>Compaction detection and full context restore.</strong> Detects lost sessions by comparing unsummarized transcripts, pulls recent checkpoints, open tasks, reminders, and key knowledge, and outputs a formatted MEMORY RESTORE block. Backward compatible with legacy DB schemas. Flags: <code>--session</code>, <code>--hours</code>, <code>--json</code>, <code>--transcript-limit</code>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v2.0.0 ── -->
+    <div class="cl-entry" id="v200">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.0.0</span>
+        <span class="cl-badge major">Major</span>
+      </div>
+      <div class="cl-date">February 25, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <ul class="cl-simple-list" style="padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;">
+          <li><strong>8 new tables:</strong> <code>businesses</code>, <code>personality</code>, <code>conversation_log</code>, <code>importance</code>, <code>memory_config</code>, <code>outreach</code>, <code>meetings</code>, <code>tasks</code></li>
+          <li><code>export.py</code> — export entire DB to JSON or CSV</li>
+          <li><code>import.py</code> — seed DB from existing markdown files</li>
+          <li><code>stats.py</code> — memory health report with row counts and recent activity</li>
+          <li><code>migrate.py</code> — versioned schema migration system</li>
+          <li><code>EXAMPLES.md</code> — real command examples with context</li>
+          <li>Soft deletes on <code>contacts</code> and <code>projects</code> (<code>deleted_at</code> column)</li>
+          <li>Importance scoring on <code>knowledge</code>, <code>ideas</code>, <code>daily_log</code>, <code>conversation_log</code></li>
+        </ul>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag none"></span>
+            <span class="cl-item-text"><code>memdb.py</code> becomes the required interface — parameterized queries only. No SQL injection possible. Schema version tracking via <code>_meta</code> table.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── v1.0.0 ── -->
+    <div class="cl-entry" id="v100">
+      <div class="cl-version-header">
+        <span class="cl-version">v1.0.0</span>
+      </div>
+      <div class="cl-date">February 24, 2026</div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <ul class="cl-simple-list" style="padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;">
+          <li>Initial release</li>
+          <li>Core tables: <code>contacts</code>, <code>knowledge</code>, <code>daily_log</code>, <code>projects</code>, <code>ideas</code>, <code>content</code>, <code>preferences</code>, <code>reminders</code></li>
+          <li><code>memdb.py</code> — safe Python query wrapper</li>
+          <li><code>migrate.py</code> — migration runner</li>
+          <li><code>init.sql</code> — schema creation</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /cl-entries -->
+</div><!-- /cl-wrap -->
+
+<!-- ── CTA ── -->
+<div class="page-cta">
+  <div class="page-cta-inner">
+    <div>
+      <h3>Already a customer? Update is free.</h3>
+      <p>Run <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;background:var(--bg3);color:var(--cyan);padding:0.15rem 0.4rem;border-radius:4px;">python3 migrate.py</code> to apply any missing schema changes. All future updates are included in your one-time purchase.</p>
+    </div>
+    <a class="btn-primary" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+  </div>
+  <p>Built by <a href="#">ZhiniLab LLC</a> · <a href="mailto:support@autoglia.com">support@autoglia.com</a></p>
+  <p style="margin-top:0.5rem;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="changelog.html">Changelog</a> · <a href="why-i-built.html">Our story</a></p>
+  <p style="margin-top:1rem; font-size:0.75rem;">Autoglia is not affiliated with OpenClaw or Anthropic.</p>
+</footer>
+
+</body>
+</html>
