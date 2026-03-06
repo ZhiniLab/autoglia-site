@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Autoglia — The Memory That Runs Itself</title>
-  <meta name="description" content="Persistent SQLite memory for your OpenClaw agent. Automatic recording, context recovery, and a full web dashboard. One-time purchase, no subscription, no cloud.">
+  <meta name="description" content="Persistent SQLite memory for your OpenClaw agent. Automatic recording, conversation segmentation, context recovery, and a full web dashboard. One-time purchase, no subscription, no cloud.">
   <meta property="og:title" content="Autoglia — The Memory That Runs Itself">
-  <meta property="og:description" content="Give your OpenClaw agent a real brain. 18-table SQLite database, automatic recording, and context recovery that works even when the AI doesn't.">
+  <meta property="og:description" content="Give your OpenClaw agent a real brain. 22-table SQLite database, automatic recording, conversation segmentation, and context recovery that works even when the AI doesn't.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com">
   <meta property="og:type" content="website">
@@ -514,7 +514,7 @@
 
 <!-- ── HERO ── -->
 <div class="hero">
-  <div class="hero-badge"><span></span> For OpenClaw agents — v2.8.0</div>
+  <div class="hero-badge"><span></span> For OpenClaw agents — v2.9.0</div>
   <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia" style="height:96px;width:auto;margin-bottom:1.5rem;">
   <h1>The memory that<br><em>runs itself.</em></h1>
   <p class="hero-sub">Your OpenClaw agent wakes up fresh every session. Autoglia gives it a real SQLite brain — structured memory that records automatically, survives context loss, and knows who you are.</p>
@@ -612,8 +612,8 @@
     <div class="layer">
       <div class="layer-num">1</div>
       <div>
-        <h3>The Database — SQLite, 18 tables, on your machine</h3>
-        <p>Contacts, projects, knowledge, decisions, conversations, preferences, reminders — all in a single <code>~/memory.db</code> file. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
+        <h3>The Database — SQLite, 22 tables, on your machine</h3>
+        <p>Contacts, projects, knowledge, decisions, conversations, preferences, reminders — all in a single <code>~/memory.db</code> file. v2.9.0 adds a normalized topic index, per-session analytics, and a watchword trigger table. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
       </div>
     </div>
     <div class="layer">
@@ -626,15 +626,15 @@
     <div class="layer">
       <div class="layer-num">3</div>
       <div>
-        <h3>Automatic checkpointing — <code>auto-checkpoint.py</code></h3>
-        <p>An hourly cron job finds sessions with unsummarized messages and extracts their content — first user requests, assistant responses, timestamps — using pure Python with zero API calls. No LLM is invoked. When your agent writes a manual checkpoint mid-session, that richer summary (with decisions and follow-ups) takes priority. Auto-checkpoint is the safety net that ensures nothing is ever lost, even if the agent never cooperates.</p>
+        <h3>Automatic checkpointing with segmentation — <code>auto-checkpoint.py</code></h3>
+        <p>An hourly cron job finds sessions with unsummarized messages and splits them into logical conversations by inactivity gap (default: 30 minutes). Monday's planning session and Thursday's debugging session don't get collapsed into one summary. Each segment gets its own topic, linked in the normalized topic index. Runs entirely in Python — zero API calls, no LLM invoked. Manual checkpoints written by the agent take priority with their richer decision and follow-up data.</p>
       </div>
     </div>
     <div class="layer">
       <div class="layer-num">4</div>
       <div>
         <h3>Context recovery — <code>recover.py</code></h3>
-        <p>Detects when the context window has been compacted. Reads the database — recent checkpoints, open tasks, contacts mentioned — and reconstructs the thread automatically. The conversation continues as if nothing happened.</p>
+        <p>Detects when the context window has been compacted. Reads the database — recent checkpoints, open tasks, contacts mentioned — and reconstructs the thread automatically. With segmented checkpoints, recovery is scoped to the right conversation, not a week-long blur. The thread continues as if nothing happened.</p>
       </div>
     </div>
   </div>
@@ -698,7 +698,7 @@
         <div class="flow-node">auto-checkpoint.py</div>
         <div class="flow-arrow">→</div>
         <div class="flow-node dest">conversation_log</div>
-        <div class="flow-note">&nbsp;(extracted excerpts, timestamps)</div>
+        <div class="flow-note">&nbsp;+ conversation_topics, session_stats</div>
       </div>
       <div class="flow-row flow-indent" style="margin-top:0.3rem;">
         <div class="flow-note">↓ on session start</div>
@@ -738,18 +738,33 @@
   <div class="features-grid">
     <div class="feature-card">
       <div class="feat-icon">🗄️</div>
-      <h4>18-Table Schema</h4>
-      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, and more.</p>
+      <h4>22-Table Schema</h4>
+      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, conversation topics, session analytics, watchwords, and more.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">🔄</div>
-      <h4>Auto-Checkpoint</h4>
-      <p>Hourly cron job captures message snippets from every unsummarized session — no API call, no agent needed. The safety net that ensures nothing is ever lost.</p>
+      <h4>Auto-Checkpoint with Segmentation</h4>
+      <p>Hourly cron captures message snippets from every session — zero API calls. Conversations separated by inactivity are split into distinct segments so Monday's chat and Thursday's don't get merged into one confusing summary.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">⚡</div>
       <h4>Context Recovery</h4>
       <p>Detects when OpenClaw's session context has been compacted by checking JSONL transcript gaps, reads the database, and hands your agent a full context restore block. Picks up mid-conversation.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🏷️</div>
+      <h4>Topic Index</h4>
+      <p>Every conversation topic is stored once, deduplicated, and tracked by use count. One checkpoint can now be tagged with multiple topics — query "all sessions that discussed X" instead of guessing with substring search.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">🔔</div>
+      <h4>Watchwords</h4>
+      <p>Store keyword triggers with associated actions. When a user message contains a watchword, the agent gets a JSON hit list with match counts. Use for routing, flagging, or topic tagging — built entirely in Python, not fragile SQL triggers.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📈</div>
+      <h4>Session Analytics</h4>
+      <p>Per-session stats written automatically after each checkpoint: message count, user vs. bot split, duration, average gap between messages, and topics discussed. No LLM involved — pure Python behavioral data.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">📊</div>
@@ -778,8 +793,8 @@
     </div>
     <div class="feature-card">
       <div class="feat-icon">💾</div>
-      <h4>Export Anytime</h4>
-      <p>Full JSON or CSV export in one command. Your data is yours — take it anywhere, back it up however you want.</p>
+      <h4>Backup & Export</h4>
+      <p>Binary database backup using SQLite's online backup API — lossless, safe while the DB is open. Export to JSON or CSV for portability. Email a backup directly from the command line. Restore on a new machine in one command.</p>
     </div>
   </div>
 </section>
@@ -825,7 +840,7 @@
         </tr>
         <tr>
           <td>Structured tables</td>
-          <td class="highlight"><span class="check">✓</span> 18 tables</td>
+          <td class="highlight"><span class="check">✓</span> 22 tables</td>
           <td><span class="cross">✗</span> Flat files</td>
           <td><span class="partial">~</span> Limited</td>
           <td><span class="cross">✗</span></td>
@@ -866,6 +881,7 @@
     <button class="scenario-btn active" onclick="runScenario(0, this)">Context Recovery</button>
     <button class="scenario-btn" onclick="runScenario(1, this)">Contact Lookup</button>
     <button class="scenario-btn" onclick="runScenario(2, this)">Memory Stats</button>
+    <button class="scenario-btn" onclick="runScenario(3, this)">Backup &amp; Email</button>
   </div>
   <div class="terminal-wrap">
     <div class="terminal-bar">
@@ -887,6 +903,7 @@
     'recover.py — autoglia',
     'memdb.py — autoglia',
     'stats.py — autoglia',
+    'export.py — autoglia',
   ];
 
   // Each scenario is an array of segments.
@@ -949,14 +966,38 @@
       {type:'out', spans:[{text:'  knowledge             ', cls:'t-dim'},{text:'142', cls:'t-cyan'},{text:'    2026-02-27', cls:'t-dim'}]},
       {type:'out', spans:[{text:'  conversation_log       ', cls:'t-dim'},{text:'31', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
       {type:'out', spans:[{text:'  transcripts           ', cls:'t-dim'},{text:'847', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  conversation_topics    ', cls:'t-dim'},{text:'18', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'  session_stats         ', cls:'t-dim'},{text:'24', cls:'t-cyan'},{text:'    2026-03-01', cls:'t-dim'}]},
       {type:'out', spans:[{text:'  ─────────────────────────────────────────', cls:'t-rule'}]},
       {type:'blank'},
+      {type:'out', spans:[{text:'  Top topics: ', cls:'t-dim'},{text:'product launch (9)', cls:'t-cyan'},{text:' · ', cls:'t-dim'},{text:'Q1 marketing (6)', cls:'t-cyan'},{text:' · ', cls:'t-dim'},{text:'pricing (4)', cls:'t-cyan'}]},
       {type:'out', spans:[{text:'  Unsummarized sessions:  ', cls:'t-dim'},{text:'0', cls:'t-green'},{text:' (clean)', cls:'t-dim'}]},
       {type:'out', spans:[{text:'  Last auto-checkpoint:   ', cls:'t-dim'},{text:'2026-03-01 14:00', cls:'t-cyan'},{text:' (47 min ago)', cls:'t-dim'}]},
       {type:'out', spans:[{text:'  DB size:               ', cls:'t-dim'},{text:'2.1 MB', cls:''}]},
       {type:'out', spans:[{text:'  Integrity check:       ', cls:'t-dim'},{text:'ok', cls:'t-green'}]},
       {type:'blank'},
       {type:'out', spans:[{text:'✓ ', cls:'t-green'},{text:'Memory is healthy. Nothing missing.', cls:''}]},
+    ],
+
+    // 3 — Backup & Email
+    [
+      {type:'out', spans:[{text:'User: ', cls:'t-purple'},{text:'"Can you back up my database and email it to me?"', cls:''}]},
+      {type:'blank'},
+      {type:'cmd', text:'python3 ~/clawd/skills/memory-db/memdb.py backup'},
+      {type:'pause', ms:300},
+      {type:'out', spans:[{text:'{"ok": true, "action": "backup",', cls:'t-dim'}]},
+      {type:'out', spans:[{text:' "dest": "~/memory-backup-2026-03-06.db",', cls:'t-dim'}]},
+      {type:'out', spans:[{text:' "size_kb": 3112}', cls:'t-dim'}]},
+      {type:'blank'},
+      {type:'cmd', text:'python3 ~/clawd/skills/memory-db/export.py --backup ~/memory-backup-2026-03-06.db --email-to user@example.com'},
+      {type:'pause', ms:500},
+      {type:'out', spans:[{text:'  ✓  Backup written (3112 KB)', cls:'t-green'}]},
+      {type:'out', spans:[{text:'     Restore: python3 export.py --restore memory-backup-2026-03-06.db', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'{"ok": true, "method": "mutt", "to": "user@example.com"}', cls:'t-dim'}]},
+      {type:'blank'},
+      {type:'out', spans:[{text:'Agent: ', cls:'t-cyan'},{text:'"Done — 3.1 MB backup saved and emailed to user@example.com."', cls:''}]},
+      {type:'out', spans:[{text:'       ', cls:''},{text:'"To restore on a new machine:', cls:'t-dim'}]},
+      {type:'out', spans:[{text:'        python3 export.py --restore memory-backup-2026-03-06.db --force', cls:'t-cyan'}]},
     ],
   ];
 
@@ -1071,24 +1112,26 @@
 <!-- ── WHAT'S IN THE ZIP ── -->
 <section>
   <div class="section-label">What's in the package</div>
-  <h2>16 files. No fluff.</h2>
+  <h2>Everything included. No extras.</h2>
   <div class="files-grid">
     <div class="file-row"><code>setup.py</code><span>One-command install, uninstall, pre-flight check, rollback manifest</span></div>
-    <div class="file-row"><code>memdb.py</code><span>Safe parameterized query interface — the only way to write to the DB</span></div>
+    <div class="file-row"><code>memdb.py</code><span>Safe parameterized query interface — backup, export, topics, watchwords, and every DB operation in one place</span></div>
     <div class="file-row"><code>recover.py</code><span>Compaction detection and full context restore from the database</span></div>
     <div class="file-row"><code>sync-sessions.py</code><span>Infrastructure-level transcript sync from OpenClaw JSONL files</span></div>
-    <div class="file-row"><code>auto-checkpoint.py</code><span>Hourly automated conversation checkpointing — no LLM required</span></div>
+    <div class="file-row"><code>auto-checkpoint.py</code><span>Hourly automated checkpointing with conversation segmentation — no LLM required</span></div>
     <div class="file-row"><code>checkpoint.py</code><span>Manual atomic checkpoint for critical decisions</span></div>
     <div class="file-row"><code>dashboard.py</code><span>Local Flask web dashboard — browse your memory at localhost:5000</span></div>
     <div class="file-row"><code>migrate.py</code><span>Versioned schema migrations — upgrades never break your data</span></div>
-    <div class="file-row"><code>import.py</code><span>One-time scan of existing workspace markdown files into the DB</span></div>
-    <div class="file-row"><code>export.py</code><span>Full JSON/CSV backup and migration export</span></div>
-    <div class="file-row"><code>stats.py</code><span>Memory health report — row counts, activity, unsummarized warnings</span></div>
-    <div class="file-row"><code>init.sql</code><span>Full 18-table schema definition</span></div>
-    <div class="file-row"><code>SKILL.md</code><span>Complete instructions your agent reads on every session start</span></div>
+    <div class="file-row"><code>import.py</code><span>Scan workspace markdown files into the DB; full restore from JSON with <code>--overwrite</code></span></div>
+    <div class="file-row"><code>export.py</code><span>Binary backup (SQLite online backup API), JSON/CSV export, email delivery via mutt/sendmail/SMTP</span></div>
+    <div class="file-row"><code>stats.py</code><span>Memory health report — row counts, top topics, active watchwords, unsummarized warnings</span></div>
+    <div class="file-row"><code>init.sql</code><span>Full 22-table schema definition for new installs</span></div>
+    <div class="file-row"><code>SKILL.md</code><span>Complete instructions your agent reads on every session start — including backup/restore conversational triggers</span></div>
     <div class="file-row"><code>README.md</code><span>Setup guide with examples and troubleshooting</span></div>
     <div class="file-row"><code>EXAMPLES.md</code><span>Every memdb.py command with real conversation examples</span></div>
+    <div class="file-row"><code>CHANGELOG.md</code><span>Full version history — every change documented</span></div>
     <div class="file-row"><code>docs/FAQ.md</code><span>Common questions, edge cases, and upgrade notes</span></div>
+    <div class="file-row"><code>tests/</code><span>pytest test suite — 5 test files covering memdb, recover, checkpoint, auto-checkpoint, and sync-sessions. Runs against a temp DB, never touches your real data.</span></div>
   </div>
 </section>
 
@@ -1104,7 +1147,7 @@
       <div class="pricing-note">one-time — no subscription, ever</div>
       <div class="pricing-raise">Price raises to <strong>$29</strong> after the first 50 customers. <em>You lock in $19 forever.</em></div>
       <ul class="pricing-features">
-        <li><span class="ok">✓</span> Full v2.8.0 package — 16 files</li>
+        <li><span class="ok">✓</span> Full v2.9.0 package — all files included</li>
         <li><span class="ok">✓</span> Auto-checkpoint + context recovery</li>
         <li><span class="ok">✓</span> Web dashboard included</li>
         <li><span class="ok">✓</span> All future version updates</li>
@@ -1157,7 +1200,11 @@
     </details>
     <details>
       <summary>Does my data ever leave my machine?</summary>
-      <p>Never. The database is a single SQLite file at <code>~/memory.db</code>. No cloud, no API calls for storage, no third-party servers. Autoglia is entirely local.</p>
+      <p>Never automatically. The database is a single SQLite file at <code>~/memory.db</code>. No cloud, no API calls for storage, no third-party servers. Autoglia is entirely local. You control when data moves — if you ask your agent to email you a backup, it does exactly that using your own mail setup, and only when you ask.</p>
+    </details>
+    <details>
+      <summary>How do I back up or move my database to a new machine?</summary>
+      <p>Just ask your agent: "Back up my database" or "Email me my memory backup." It runs <code>export.py --backup</code> using SQLite's built-in backup API — safe while the DB is open — and optionally emails you the file. To restore on a new machine: install Autoglia, run <code>migrate.py</code> to create the schema, then <code>python3 export.py --restore memory-backup-YYYY-MM-DD.db --force</code>. Your entire history is back instantly.</p>
     </details>
     <details>
       <summary>Can I extend the schema with my own tables?</summary>
