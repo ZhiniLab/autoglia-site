@@ -536,7 +536,7 @@
 
       <div class="cl-why">
         <div class="cl-why-label">Why this matters</div>
-        <p>The previous approach relied on the LLM voluntarily saving transcripts on every message. Under load, mid-task, or in short Discord exchanges, the LLM skips it — leaving <code>conversation_transcripts</code> empty and <code>recover.py</code> with nothing to reconstruct from. <strong><code>sync-sessions.py</code> solves this at the infrastructure level.</strong> Context loss from compaction is now fully recoverable.</p>
+        <p>The previous approach relied on the LLM voluntarily saving transcripts on every message. Under load, mid-task, or in fast-moving conversations, the LLM skips it — leaving <code>conversation_transcripts</code> empty and <code>recover.py</code> with nothing to reconstruct from. <strong><code>sync-sessions.py</code> solves this at the infrastructure level.</strong> Context loss from compaction is now fully recoverable.</p>
       </div>
 
       <div class="cl-section">
