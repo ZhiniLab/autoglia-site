@@ -197,9 +197,49 @@
     footer a { color: var(--muted); text-decoration: none; }
     footer a:hover { color: var(--text); }
 
+    /* ── HAMBURGER ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 6px; width: 40px; height: 40px; flex-shrink: 0;
+    }
+    .hamburger span {
+      display: block; height: 2px; background: var(--text);
+      border-radius: 2px; transition: transform 0.25s, opacity 0.2s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 64px; left: 0; right: 0; bottom: 0;
+      background: rgba(7,7,15,0.97);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      flex-direction: column; align-items: center; justify-content: center;
+      z-index: 99; padding: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      display: block; color: var(--text); text-decoration: none;
+      font-size: 1.2rem; font-weight: 600; padding: 1rem 0;
+      width: 100%; text-align: center;
+      border-bottom: 1px solid var(--border); transition: color 0.2s;
+    }
+    .mobile-menu a:first-child { border-top: 1px solid var(--border); }
+    .mobile-menu a:hover { color: var(--cyan); }
+    .mobile-menu .mobile-cta {
+      background: var(--cyan); color: #000; font-weight: 800;
+      border-radius: 10px; border: none; margin-top: 1.5rem; font-size: 1rem;
+    }
+
     @media(max-width: 640px) {
       nav { padding: 0 1rem; }
-      .nav-links { display: none; }
+      .nav-links { display: none !important; }
+      .hamburger { display: flex; }
       .card { padding: 2rem 1.5rem; }
       .form-row { flex-direction: column; }
     }
@@ -217,7 +257,18 @@
     <a href="index.html#faq">FAQ</a>
     <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <a href="index.html#features">Features</a>
+  <a href="changelog.html">Changelog</a>
+  <a href="index.html#faq">FAQ</a>
+  <a href="why-i-built.html">Our story</a>
+  <a class="mobile-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
+</div>
 
 <main>
   <div class="card">
@@ -321,5 +372,27 @@
   })
 </script>
 
+<script>
+(function() {
+  var btn  = document.getElementById('hamburger');
+  var menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+  function close() {
+    menu.classList.remove('open'); btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    menu.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  btn.addEventListener('click', function() {
+    var open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    menu.setAttribute('aria-hidden', String(!open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+  menu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', close); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+})();
+</script>
 </body>
 </html>
