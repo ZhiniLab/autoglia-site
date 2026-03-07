@@ -6,7 +6,7 @@
   <title>Changelog — Autoglia</title>
   <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
   <meta property="og:title" content="Autoglia Changelog">
-  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.9.0 — conversation segmentation, topic index, watchwords, session analytics, and binary backup with email delivery.">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.9.1 — always-on session briefing with user identity, and v2.9.0 — conversation segmentation, topic index, watchwords, session analytics, and binary backup.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com/changelog">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
@@ -388,7 +388,8 @@
   <!-- Sidebar index -->
   <nav class="cl-sidebar">
     <div class="cl-sidebar-title">Versions</div>
-    <a href="#v290" class="latest"><span class="cl-sidebar-dot"></span>v2.9.0</a>
+    <a href="#v291" class="latest"><span class="cl-sidebar-dot"></span>v2.9.1</a>
+    <a href="#v290"><span class="cl-sidebar-dot"></span>v2.9.0</a>
     <a href="#v280"><span class="cl-sidebar-dot"></span>v2.8.0</a>
     <a href="#v270"><span class="cl-sidebar-dot"></span>v2.7.0</a>
     <a href="#v260"><span class="cl-sidebar-dot"></span>v2.6.0</a>
@@ -404,11 +405,43 @@
   <!-- Entries -->
   <div class="cl-entries">
 
+    <!-- ── v2.9.1 ── -->
+    <div class="cl-entry" id="v291">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.9.1</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">March 7, 2026</div>
+
+      <div class="cl-why">
+        <p>The reliability gap this closes: even with the session startup protocol in place, a bot waking up in a new conversation had no proactive context. It knew its personality but nothing about who it was talking to, what projects were active, or what had been discussed recently — unless the user explicitly asked. The always-on briefing means the bot arrives oriented, not blank. No new commands, no new scripts, no new instructions to follow or forget. The existing startup path just does more.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-title">Changed</div>
+        <div class="cl-item">
+          <span class="cl-item-tag cl-tag-changed">recover.py</span>
+          <span class="cl-item-text"><strong>Always-on session briefing.</strong> Previously only provided meaningful output when compaction was detected — on a fresh session it emitted "No action needed" and the bot moved on. Now always outputs a full SESSION BRIEFING: user name, timezone, businesses, recent contacts, active projects, open tasks, recent checkpoints, reminders, personality profiles, and key knowledge. The bot is oriented from the first message of every session.</span>
+        </div>
+        <div class="cl-item">
+          <span class="cl-item-tag cl-tag-changed">recover.py</span>
+          <span class="cl-item-text"><strong>User identity block.</strong> New <code>get_user_identity()</code> pulls name, timezone, and preferences from <code>user_preferences</code> (or <code>preferences</code> as fallback), active ventures from <code>businesses</code>, and recent contacts from <code>contacts</code>. The bot now knows who it's talking to at session start without being told.</span>
+        </div>
+        <div class="cl-item">
+          <span class="cl-item-tag cl-tag-changed">memwrap.sh</span>
+          <span class="cl-item-text">Replaced hardcoded home path with dynamic detection via <code>$(eval echo ~"$(whoami)")</code>. Works correctly for any user on any system.</span>
+        </div>
+        <div class="cl-item">
+          <span class="cl-item-tag cl-tag-changed">sync.sh</span>
+          <span class="cl-item-text">Stronger personal data guard: hardcoded home paths and owner-specific strings added to the forbidden pattern list and sanitization pass. Build pipeline now catches path leakage that was previously invisible.</span>
+        </div>
+      </div>
+    </div>
+
     <!-- ── v2.9.0 ── -->
     <div class="cl-entry" id="v290">
       <div class="cl-version-header">
         <span class="cl-version">v2.9.0</span>
-        <span class="cl-badge latest">Latest</span>
       </div>
       <div class="cl-date">March 6, 2026</div>
 
