@@ -121,6 +121,34 @@
     .whats-new li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-size: 0.75rem; }
     .whats-new li strong { color: var(--text); }
 
+    /* How to apply callout */
+    .how-to-apply {
+      background: rgba(0,212,255,0.04);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.35rem;
+      margin-bottom: 2rem;
+    }
+    .how-to-apply-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 0.65rem;
+    }
+    .how-to-apply p {
+      color: var(--muted); font-size: 0.85rem; line-height: 1.65;
+      margin-bottom: 0.5rem;
+    }
+    .how-to-apply p:last-child { margin-bottom: 0; }
+    .how-to-apply p strong { color: var(--text); }
+    .how-to-apply code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82em;
+      background: var(--bg3); color: var(--cyan);
+      padding: 0.1rem 0.35rem; border-radius: 3px;
+    }
+    .warn-inline {
+      color: #f59e0b; font-size: 0.78rem;
+    }
+
     /* Form */
     .form-label {
       display: block; font-size: 0.85rem; font-weight: 600;
@@ -295,6 +323,14 @@
         <li><strong>Open-loop detection</strong> — stale tasks and unanswered threads surfaced at session start</li>
         <li><strong>129 tests passing</strong> — 7 test files including extraction quality and promotion harness</li>
       </ul>
+    </div>
+
+    <div class="how-to-apply">
+      <div class="how-to-apply-label">How to apply the update</div>
+      <p>Once you have the new files, upgrading is a single command:</p>
+      <p><code>python3 ~/clawd/skills/memory-db/migrate.py</code></p>
+      <p>That's it. The migration runs in-place, touches only the schema, and never modifies your existing data. Safe to run multiple times — it skips versions already applied.</p>
+      <p class="warn-inline">⚠ Do not run <code>setup.py install</code> on an existing installation — it's for fresh installs only and will refuse with an "already installed" error. Copy the new files, then run <code>migrate.py</code>.</p>
     </div>
 
     <label class="form-label" for="email">Your purchase email</label>

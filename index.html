@@ -1305,6 +1305,11 @@
       <p>Yes. The migration system (<code>migrate.py</code>) applies versioned schema changes without touching existing data. You can upgrade from any prior version safely. The installer also makes a full backup before making any changes.</p>
     </details>
     <details>
+      <summary>How do I upgrade to a new version?</summary>
+      <p>Copy the new files into your skill directory, then run one command: <code>python3 migrate.py</code>. That applies any missing schema changes in order and leaves your data untouched. It's safe to run multiple times — versions already applied are skipped automatically.</p>
+      <p style="margin-top:0.75rem;">Do <strong>not</strong> run <code>setup.py install</code> on an existing installation — that command is for fresh installs only. On a system that already has Autoglia installed it will refuse with an "already installed" error and suggest you uninstall first. You don't need to uninstall. Just copy the files and run <code>migrate.py</code>.</p>
+    </details>
+    <details>
       <summary>What if my agent doesn't save things during a conversation?</summary>
         <p>That's exactly what Autoglia is designed for. <code>sync-sessions.py</code> pulls transcripts directly from OpenClaw's own JSONL files — it doesn't rely on the agent doing anything. And <code>auto-checkpoint.py</code> captures message snippets on schedule with zero API calls. Nothing is lost even when the agent is uncooperative.</p>
     </details>
