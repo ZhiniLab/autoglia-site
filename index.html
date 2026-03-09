@@ -743,7 +743,7 @@
       <div class="sec-icon">📖</div>
       <h3>What gets read</h3>
       <ul>
-        <li>OpenClaw's own JSONL session files at <code>~/.clawdbot/sessions/</code></li>
+        <li>OpenClaw's own JSONL session files at <code>~/.openclaw/agents/main/sessions/</code></li>
         <li>Each message: role, content, and timestamp — nothing else</li>
         <li>Files are opened read-only, never modified or deleted</li>
         <li>Only files newer than the last sync run are processed</li>
@@ -776,7 +776,7 @@
     <div class="data-flow-label">How data flows through the system</div>
     <div class="flow-rows">
       <div class="flow-row">
-        <div class="flow-node source">~/.clawdbot/sessions/*.jsonl</div>
+        <div class="flow-node source">~/.openclaw/agents/main/sessions/*.jsonl</div>
         <div class="flow-arrow">→</div>
         <div class="flow-node">sync-sessions.py</div>
         <div class="flow-arrow">→</div>

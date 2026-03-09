@@ -632,7 +632,7 @@
         <div class="cl-items">
           <div class="cl-item">
             <span class="cl-item-tag">setup.py</span>
-            <span class="cl-item-text">Install now registers an hourly clawdbot cron job (<code>clawdbot cron add</code>) that runs <code>auto-checkpoint.py --quiet</code> automatically. Job ID stored in the manifest for clean uninstall.</span>
+            <span class="cl-item-text">Install now registers an hourly openclaw cron job (<code>openclaw cron add</code>) that runs <code>auto-checkpoint.py --quiet</code> automatically. Job ID stored in the manifest for clean uninstall.</span>
           </div>
           <div class="cl-item">
             <span class="cl-item-tag">SKILL.md</span>
@@ -659,7 +659,7 @@
         <div class="cl-items">
           <div class="cl-item">
             <span class="cl-item-tag">sync-sessions.py</span>
-            <span class="cl-item-text"><strong>Infrastructure-level transcript sync.</strong> Reads clawdbot's JSONL session files and imports new messages into <code>conversation_transcripts</code>. Automatic dedup via <code>INSERT OR IGNORE</code>. Flags: <code>--status</code>, <code>--dry-run</code>, <code>--since 24h/7d</code>, <code>--agent NAME</code>. Graceful if clawdbot is not installed.</span>
+            <span class="cl-item-text"><strong>Infrastructure-level transcript sync.</strong> Reads OpenClaw/Clawdbot JSONL session files and imports new messages into <code>conversation_transcripts</code>. Automatic dedup via <code>INSERT OR IGNORE</code>. Flags: <code>--status</code>, <code>--dry-run</code>, <code>--since 24h/7d</code>, <code>--agent NAME</code>. Graceful if OpenClaw is not installed.</span>
           </div>
         </div>
       </div>
@@ -762,7 +762,7 @@
         <div class="cl-items">
           <div class="cl-item">
             <span class="cl-item-tag">setup.py</span>
-            <span class="cl-item-text"><strong>Full installer / uninstaller</strong> with pre-flight check, schema migration, AGENTS.md injection, workspace indexing, and cron registration. <code>--dry-run</code>, <code>--yes</code> flags. Python version gate, idempotent injection, conflict detection, atomic file writes, automatic backup, and rollback manifest at <code>~/.clawdbot/memory-db-install.json</code>.</span>
+            <span class="cl-item-text"><strong>Full installer / uninstaller</strong> with pre-flight check, schema migration, AGENTS.md injection, workspace indexing, and cron registration. <code>--dry-run</code>, <code>--yes</code> flags. Python version gate, idempotent injection, conflict detection, atomic file writes, automatic backup, and rollback manifest at <code>~/.openclaw/memory-db-install.json</code>.</span>
           </div>
         </div>
       </div>
