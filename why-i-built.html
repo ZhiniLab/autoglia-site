@@ -55,6 +55,7 @@
     .nav-links { display: flex; align-items: center; gap: 2rem; }
     .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--cyan); }
     .nav-cta {
       background: var(--cyan); color: #000;
       font-weight: 700; font-size: 0.85rem;
@@ -309,6 +310,8 @@
     <a href="index.html#features">Features</a>
     <a href="index.html#pricing">Pricing</a>
     <a href="index.html#faq">FAQ</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="why-i-built.html" class="active">Our story</a>
     <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -318,6 +321,7 @@
 
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <a href="index.html#how-it-works">How it works</a>
+  <a href="index.html#security">Security</a>
   <a href="index.html#features">Features</a>
   <a href="index.html#pricing">Pricing</a>
   <a href="index.html#faq">FAQ</a>

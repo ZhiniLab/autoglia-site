@@ -599,7 +599,7 @@
 
 <!-- ── HERO ── -->
 <div class="hero">
-  <div class="hero-badge"><span></span> For OpenClaw agents — v2.9.0</div>
+  <div class="hero-badge"><span></span> For OpenClaw agents — v2.10.0</div>
   <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia" style="height:96px;width:auto;margin-bottom:1.5rem;">
   <h1>The memory that<br><em>runs itself.</em></h1>
   <p class="hero-sub">Your OpenClaw agent wakes up fresh every session. Autoglia gives it a real SQLite brain — structured memory that records automatically, survives context loss, and knows who you are.</p>
@@ -690,15 +690,15 @@
 <!-- ── HOW IT WORKS ── -->
 <section id="how-it-works">
   <div class="section-label">Architecture</div>
-  <h2>Four layers. Fully automatic.</h2>
-  <p class="section-sub">Autoglia doesn't ask your agent to cooperate. The infrastructure records everything whether the agent helps or not.</p>
+  <h2>Five layers. Fully automatic.</h2>
+  <p class="section-sub">Autoglia doesn't ask your agent to cooperate. The infrastructure records everything whether the agent helps or not — and a background agent keeps memory clean while you're away.</p>
 
   <div class="layers">
     <div class="layer">
       <div class="layer-num">1</div>
       <div>
-        <h3>The Database — SQLite, 22 tables, on your machine</h3>
-        <p>Contacts, projects, knowledge, decisions, conversations, preferences, reminders — all in a single <code>~/memory.db</code> file. v2.9.0 adds a normalized topic index, per-session analytics, and a watchword trigger table. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
+        <h3>The Database — SQLite, 26 tables, on your machine</h3>
+        <p>Contacts, projects, knowledge, decisions, conversations, preferences, reminders — all in a single <code>~/memory.db</code> file. Includes a normalized topic index, per-session analytics, watchword triggers, background job queue, context packs, entity aliases, and proposal staging. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
       </div>
     </div>
     <div class="layer">
@@ -719,7 +719,14 @@
       <div class="layer-num">4</div>
       <div>
         <h3>Context recovery — <code>recover.py</code></h3>
-        <p>Detects when the context window has been compacted. Reads the database — recent checkpoints, open tasks, contacts mentioned — and reconstructs the thread automatically. With segmented checkpoints, recovery is scoped to the right conversation, not a week-long blur. The thread continues as if nothing happened.</p>
+        <p>Detects when the context window has been compacted. Reads the database — recent checkpoints, open tasks, contacts mentioned, stale loops, pending memory proposals — and reconstructs the thread automatically. With segmented checkpoints, recovery is scoped to the right conversation, not a week-long blur. The thread continues as if nothing happened.</p>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">5</div>
+      <div>
+        <h3>Background memory agent — <code>memory-agent.py</code></h3>
+        <p>A 15-minute cron job that maintains the database while the agent is idle. Runs entity normalization, builds precomputed startup and project context packs, scores memory health, detects conflicts, and stages extraction proposals — all without touching the foreground session. Uses a lockfile to prevent overlap and a job queue for cross-run idempotency. Heuristic extraction now; model-assisted extraction available via <code>AUTOGLIA_MODEL_EXTRACT=1</code> with any OpenAI-compatible endpoint.</p>
       </div>
     </div>
   </div>
@@ -823,8 +830,8 @@
   <div class="features-grid">
     <div class="feature-card">
       <div class="feat-icon">🗄️</div>
-      <h4>22-Table Schema</h4>
-      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, conversation topics, session analytics, watchwords, and more.</p>
+      <h4>26-Table Schema</h4>
+      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, conversation topics, session analytics, watchwords, background job queue, context packs, entity aliases, proposal staging, and more.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">🔄</div>
@@ -881,6 +888,26 @@
       <h4>Backup & Export</h4>
       <p>Binary database backup using SQLite's online backup API — lossless, safe while the DB is open. Export to JSON or CSV for portability. Email a backup directly from the command line. Restore on a new machine in one command.</p>
     </div>
+    <div class="feature-card">
+      <div class="feat-icon">🤖</div>
+      <h4>Background Memory Agent</h4>
+      <p>15-minute cron worker that normalizes entities, detects stale loops, scores memory health, and builds precomputed context packs — all while the agent is idle. Lockfile-protected, idempotent across runs, safe to overlap with foreground activity.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">📬</div>
+      <h4>Proposal Staging</h4>
+      <p>Non-deterministic extractions (decisions, entities, open loops) land in a review queue — never written directly to canonical tables. Accept or reject from the CLI or see them surfaced in your session briefing. Safe by default.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">⚡</div>
+      <h4>Precomputed Context Packs</h4>
+      <p>The background agent prebakes startup and per-project context snapshots so session briefings load instantly. Invalidated and rebuilt automatically when underlying data changes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon">❤️</div>
+      <h4>Memory Health Scoring</h4>
+      <p>Five bounded metrics tracked every run: duplicate entity risk, stale tasks, unsummarized session backlog, orphan rows, and checkpoint freshness. Surfaced in <code>stats.py</code> health report.</p>
+    </div>
   </div>
 </section>
 
@@ -925,7 +952,7 @@
         </tr>
         <tr>
           <td>Structured tables</td>
-          <td class="highlight"><span class="check">✓</span> 22 tables</td>
+          <td class="highlight"><span class="check">✓</span> 26 tables</td>
           <td><span class="cross">✗</span> Flat files</td>
           <td><span class="partial">~</span> Limited</td>
           <td><span class="cross">✗</span></td>
@@ -1209,14 +1236,16 @@
     <div class="file-row"><code>migrate.py</code><span>Versioned schema migrations — upgrades never break your data</span></div>
     <div class="file-row"><code>import.py</code><span>Scan workspace markdown files into the DB; full restore from JSON with <code>--overwrite</code></span></div>
     <div class="file-row"><code>export.py</code><span>Binary backup (SQLite online backup API), JSON/CSV export, email delivery via mutt/sendmail/SMTP</span></div>
-    <div class="file-row"><code>stats.py</code><span>Memory health report — row counts, top topics, active watchwords, unsummarized warnings</span></div>
-    <div class="file-row"><code>init.sql</code><span>Full 22-table schema definition for new installs</span></div>
+    <div class="file-row"><code>stats.py</code><span>Memory health report — row counts, top topics, active watchwords, unsummarized warnings, and 5-metric health score</span></div>
+    <div class="file-row"><code>memory-agent.py</code><span>Background maintenance worker — runs every 15 min via cron, normalizes entities, builds context packs, scores health, stages extraction proposals</span></div>
+    <div class="file-row"><code>extractors.py</code><span>Typed extraction interface — heuristic baseline included, optional model-assisted path via any OpenAI-compatible endpoint</span></div>
+    <div class="file-row"><code>init.sql</code><span>Full 26-table schema definition for new installs</span></div>
     <div class="file-row"><code>SKILL.md</code><span>Complete instructions your agent reads on every session start — including backup/restore conversational triggers</span></div>
     <div class="file-row"><code>README.md</code><span>Setup guide with examples and troubleshooting</span></div>
     <div class="file-row"><code>EXAMPLES.md</code><span>Every memdb.py command with real conversation examples</span></div>
     <div class="file-row"><code>CHANGELOG.md</code><span>Full version history — every change documented</span></div>
     <div class="file-row"><code>docs/FAQ.md</code><span>Common questions, edge cases, and upgrade notes</span></div>
-    <div class="file-row"><code>tests/</code><span>pytest test suite — 5 test files covering memdb, recover, checkpoint, auto-checkpoint, and sync-sessions. Runs against a temp DB, never touches your real data.</span></div>
+    <div class="file-row"><code>tests/</code><span>pytest test suite — 7 test files, 129 tests. Covers memdb, recover, checkpoint, auto-checkpoint, sync-sessions, extraction quality, and proposal promotion. Runs against a temp DB, never touches your real data.</span></div>
   </div>
 </section>
 
@@ -1232,7 +1261,7 @@
       <div class="pricing-note">one-time — no subscription, ever</div>
       <div class="pricing-raise">Price raises to <strong>$29</strong> after the first 50 customers. <em>You lock in $19 forever.</em></div>
       <ul class="pricing-features">
-        <li><span class="ok">✓</span> Full v2.9.0 package — all files included</li>
+        <li><span class="ok">✓</span> Full v2.10.0 package — all files included</li>
         <li><span class="ok">✓</span> Auto-checkpoint + context recovery</li>
         <li><span class="ok">✓</span> Web dashboard included</li>
         <li><span class="ok">✓</span> All future version updates</li>

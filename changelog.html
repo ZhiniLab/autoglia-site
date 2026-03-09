@@ -6,7 +6,7 @@
   <title>Changelog — Autoglia</title>
   <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
   <meta property="og:title" content="Autoglia Changelog">
-  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.9.1 — always-on session briefing with user identity, and v2.9.0 — conversation segmentation, topic index, watchwords, session analytics, and binary backup.">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.10.0 — background memory agent, proposal staging, context packs, health scoring, and 129 tests.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com/changelog">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
@@ -388,7 +388,8 @@
   <!-- Sidebar index -->
   <nav class="cl-sidebar">
     <div class="cl-sidebar-title">Versions</div>
-    <a href="#v291" class="latest"><span class="cl-sidebar-dot"></span>v2.9.1</a>
+    <a href="#v2100" class="latest"><span class="cl-sidebar-dot"></span>v2.10.0</a>
+    <a href="#v291"><span class="cl-sidebar-dot"></span>v2.9.1</a>
     <a href="#v290"><span class="cl-sidebar-dot"></span>v2.9.0</a>
     <a href="#v280"><span class="cl-sidebar-dot"></span>v2.8.0</a>
     <a href="#v270"><span class="cl-sidebar-dot"></span>v2.7.0</a>
@@ -405,11 +406,92 @@
   <!-- Entries -->
   <div class="cl-entries">
 
+    <!-- ── v2.10.0 ── -->
+    <div class="cl-entry" id="v2100">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.10.0</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">March 8, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>Every previous version was foreground-only: the agent recorded things when it remembered to, and the cron jobs cleaned up what it missed. But the database itself was passive — it never improved on its own. <strong>v2.10.0 adds a background maintenance layer</strong> that runs while you're away: normalizing entity names, building precomputed context snapshots, detecting stale loops, scoring health, and staging extraction proposals into a review queue. Non-deterministic extractions don't go directly to canonical tables — they land in <code>memory_proposals</code> for you to accept or reject. The system is now self-improving, not just self-recording.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text"><strong>Background memory maintenance worker.</strong> Runs every 15 minutes as a cron job. Pipeline stages: sync sessions → auto-checkpoint → health check → entity normalization → extraction → conflict detection → context pack build. Lockfile-protected (no overlapping runs). Run UUID for traceability. <code>--dry-run</code>, <code>--jobs</code>, and <code>--scope</code> flags.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">extractors.py</span>
+            <span class="cl-item-text"><strong>Typed extraction interface with two implementations.</strong> Defines <code>DecisionProposal</code>, <code>EntityProposal</code>, <code>OpenLoopProposal</code> dataclasses and an <code>Extractor</code> protocol. <code>HeuristicExtractor</code>: regex + keyword baseline, zero API calls. <code>ModelExtractor</code>: feature-flagged, works with any OpenAI-compatible endpoint — enable via <code>AUTOGLIA_MODEL_EXTRACT=1</code> plus <code>AUTOGLIA_MODEL</code>, <code>AUTOGLIA_API_BASE</code>, <code>AUTOGLIA_API_KEY</code>. Same typed output either way.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>background_jobs</code></strong> — job queue with cross-run idempotency. Each entry records <code>job_type</code>, <code>idempotency_key</code>, <code>run_id</code>, <code>status</code>, <code>result_json</code>, and timestamps. Stable work-item keys (e.g. <code>extract.all:session:{sk}:window:{ts}</code>) prevent re-processing across cron runs.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>memory_proposals</code></strong> — non-deterministic extraction staging table. Decisions, entities, and open loops land here first. Status: <code>pending → accepted/rejected → promoted</code>. Pending proposals surfaced in <code>recover.py</code> session briefing. Accepted proposals promoted to canonical tables by the next background run.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>context_packs</code></strong> — precomputed context snapshots. Two types: <code>startup</code> (identity, active projects, open tasks, recent contacts) and <code>project</code> (per-project summary). Built by the background agent, freshness-validated on read, invalidated when underlying data changes.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">table</span>
+            <span class="cl-item-text"><strong><code>entity_aliases</code></strong> — alias registry for entity normalization. Maps variant forms to a canonical name. Populated by the background agent via case-folding, whitespace normalization, and punctuation cleanup. High-value entity aliases can be pinned explicitly.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memdb.py</span>
+            <span class="cl-item-text">New <code>proposals</code> subcommand: <code>proposals list</code>, <code>proposals accept &lt;id&gt;</code>, <code>proposals reject &lt;id&gt;</code>. Scope-filtered if <code>MEMORY_SCOPE</code> env var is set.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">stats.py</span>
+            <span class="cl-item-text">New <code>health_metrics()</code> function — 5 bounded metrics: duplicate entity risk, stale open tasks, unsummarized session backlog, orphan task rows, and checkpoint freshness. Included in both JSON and human-readable <code>full_report()</code> output.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">tests/</span>
+            <span class="cl-item-text"><strong>2 new test files, 129 total tests.</strong> <code>test_extractors.py</code>: 16 tests with labeled segment fixtures and recall thresholds — quality gate for heuristic extraction. <code>test_promotion.py</code>: 13 tests covering accepted proposal → canonical write, duplicate prevention, bad payload handling, and promotion idempotency.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">sync-sessions.py</span>
+            <span class="cl-item-text"><strong>Content-hash dedup.</strong> Each transcript row now carries a <code>content_hash</code> (SHA-256, 16-char prefix). Unique index changed from <code>(session_key, timestamp, role)</code> to <code>(session_key, role, content_hash, timestamp)</code> — eliminates timestamp collisions while allowing legitimate repeated messages at different times.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">auto-checkpoint.py</span>
+            <span class="cl-item-text"><strong>Per-segment checkpointing.</strong> Each conversation segment now produces its own <code>checkpoint.py</code> call immediately after segmentation, rather than one merged summary. Topic and summary are scoped to the correct segment. Recovery is now precise.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">recover.py</span>
+            <span class="cl-item-text">Session briefing now surfaces: stale tasks (open tasks not updated in >7 days), open loops (unanswered questions, pending follow-ups), and pending memory proposals requiring review. Scope-filtered via <code>MEMORY_SCOPE</code> env var.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">migrate.py</span>
+            <span class="cl-item-text">Migrations v9 and v10. v9: adds <code>content_hash</code> to <code>conversation_transcripts</code>, backfills existing rows, rebuilds unique index. Creates <code>background_jobs</code>, <code>context_packs</code>, <code>entity_aliases</code>, <code>memory_proposals</code>. v10: adds <code>scope TEXT DEFAULT 'default'</code> to <code>knowledge</code>, <code>conversation_log</code>, <code>contacts</code>, <code>tasks</code>, <code>projects</code>, <code>memory_proposals</code>, <code>context_packs</code>. Schema now at version 10.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">all scripts</span>
+            <span class="cl-item-text"><strong>SQLite concurrency hardening.</strong> <code>PRAGMA busy_timeout=5000</code> applied in every <code>get_conn()</code> call across all scripts. WAL journal mode enforced. Background agent checks for foreground activity before running write-heavy stages.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── v2.9.1 ── -->
     <div class="cl-entry" id="v291">
       <div class="cl-version-header">
         <span class="cl-version">v2.9.1</span>
-        <span class="cl-badge latest">Latest</span>
       </div>
       <div class="cl-date">March 7, 2026</div>
 

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Get Your Free Update — Autoglia v2.9.0</title>
-  <meta name="description" content="Already purchased Autoglia? Enter your email to get your free v2.9.0 update link.">
+  <title>Get Your Free Update — Autoglia v2.10.0</title>
+  <meta name="description" content="Already purchased Autoglia? Enter your email to get your free v2.10.0 update link.">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -252,9 +252,13 @@
     <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
   </a>
   <div class="nav-links">
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="index.html#security">Security</a>
     <a href="index.html#features">Features</a>
-    <a href="changelog.html">Changelog</a>
+    <a href="index.html#pricing">Pricing</a>
     <a href="index.html#faq">FAQ</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="why-i-built.html">Our story</a>
     <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
@@ -263,28 +267,33 @@
 </nav>
 
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <a href="index.html#how-it-works">How it works</a>
+  <a href="index.html#security">Security</a>
   <a href="index.html#features">Features</a>
-  <a href="changelog.html">Changelog</a>
+  <a href="index.html#pricing">Pricing</a>
   <a href="index.html#faq">FAQ</a>
+  <a href="changelog.html">Changelog</a>
   <a href="why-i-built.html">Our story</a>
   <a class="mobile-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
 </div>
 
 <main>
   <div class="card">
-    <div class="card-badge"><span></span> Free update — v2.9.0</div>
+    <div class="card-badge"><span></span> Free update — v2.10.0</div>
     <h1>Get your free update.</h1>
-    <p class="subtitle">Already a customer? Enter the email you used to purchase and we'll send you a fresh v2.9.0 download link instantly.</p>
+    <p class="subtitle">Already a customer? Enter the email you used to purchase and we'll send you a fresh v2.10.0 download link instantly.</p>
 
     <div class="whats-new">
-      <div class="whats-new-label">What's new in v2.9.0</div>
+      <div class="whats-new-label">What's new in v2.10.0</div>
       <ul>
-        <li><strong>Conversation segmentation</strong> — distinct conversations no longer merge into one summary</li>
-        <li><strong>Topic index</strong> — normalized, deduplicated, queryable by frequency</li>
-        <li><strong>Watchwords</strong> — keyword triggers with match counts</li>
-        <li><strong>Session analytics</strong> — behavioral stats per session, zero LLM</li>
-        <li><strong>Binary backup + email</strong> — "back up my database and email it to me"</li>
-        <li><strong>Full test suite</strong> — pytest coverage for every core script</li>
+        <li><strong>Background memory agent</strong> — <code>memory-agent.py</code> runs every 15 min, maintains the DB while you're away</li>
+        <li><strong>Proposal staging</strong> — extracted decisions, entities, and open loops land in a review queue, not canonical tables</li>
+        <li><strong>Context packs</strong> — precomputed startup and project snapshots for instant session briefings</li>
+        <li><strong>Health scoring</strong> — 5 bounded metrics in <code>stats.py</code>: duplicate risk, stale tasks, backlog, orphans, freshness</li>
+        <li><strong>Entity normalization</strong> — case-folding, whitespace cleanup, and alias table for high-value entities</li>
+        <li><strong>Content-hash dedup</strong> — smarter transcript deduplication, no more timestamp collisions</li>
+        <li><strong>Open-loop detection</strong> — stale tasks and unanswered threads surfaced at session start</li>
+        <li><strong>129 tests passing</strong> — 7 test files including extraction quality and promotion harness</li>
       </ul>
     </div>
 
