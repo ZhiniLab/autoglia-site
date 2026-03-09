@@ -6,7 +6,7 @@
   <title>Changelog — Autoglia</title>
   <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
   <meta property="og:title" content="Autoglia Changelog">
-  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.10.0 — background memory agent, proposal staging, context packs, health scoring, and 129 tests.">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.11.0 — OpenClaw compatibility, updated session paths, and openclaw cron support.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com/changelog">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
@@ -388,7 +388,8 @@
   <!-- Sidebar index -->
   <nav class="cl-sidebar">
     <div class="cl-sidebar-title">Versions</div>
-    <a href="#v2100" class="latest"><span class="cl-sidebar-dot"></span>v2.10.0</a>
+    <a href="#v2110" class="latest"><span class="cl-sidebar-dot"></span>v2.11.0</a>
+    <a href="#v2100"><span class="cl-sidebar-dot"></span>v2.10.0</a>
     <a href="#v291"><span class="cl-sidebar-dot"></span>v2.9.1</a>
     <a href="#v290"><span class="cl-sidebar-dot"></span>v2.9.0</a>
     <a href="#v280"><span class="cl-sidebar-dot"></span>v2.8.0</a>
@@ -406,11 +407,25 @@
   <!-- Entries -->
   <div class="cl-entries">
 
+    <!-- ── v2.11.0 ── -->
+    <div class="cl-entry" id="v2110">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.11.0</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">March 2026</div>
+      <p><strong>OpenClaw compatibility update.</strong> Session paths updated from <code>~/.clawdbot/sessions/</code> to <code>~/.openclaw/agents/main/sessions/</code>. Cron commands updated from <code>clawdbot cron</code> to <code>openclaw cron</code>. The skill now auto-detects whether OpenClaw or Clawdbot is installed and uses the correct CLI and state directory. Backward-compatible with existing Clawdbot installs.</p>
+      <ul class="cl-items">
+        <li><span class="cl-item-label">sync-sessions.py</span><span class="cl-item-text">Auto-detects gateway directory: prefers <code>~/.openclaw</code>, falls back to <code>~/.clawdbot</code>. Supports <code>OPENCLAW_DIR</code> env var.</span></li>
+        <li><span class="cl-item-label">setup.py</span><span class="cl-item-text">Uses <code>openclaw cron</code> when OpenClaw is installed, <code>clawdbot cron</code> otherwise. Manifest path follows the same auto-detect logic.</span></li>
+        <li><span class="cl-item-label">Version</span><span class="cl-item-text">Bumped to 2.11.0.</span></li>
+      </ul>
+    </div>
+
     <!-- ── v2.10.0 ── -->
     <div class="cl-entry" id="v2100">
       <div class="cl-version-header">
         <span class="cl-version">v2.10.0</span>
-        <span class="cl-badge latest">Latest</span>
       </div>
       <div class="cl-date">March 8, 2026</div>
 
