@@ -567,7 +567,7 @@
 
 <!-- ── NAV ── -->
 <nav>
-  <a class="nav-logo" href="#">
+  <a class="nav-logo" href="index.html">
     <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
   </a>
   <div class="nav-links">
@@ -697,8 +697,8 @@
     <div class="layer">
       <div class="layer-num">1</div>
       <div>
-        <h3>The Database — SQLite, 26 tables, on your machine</h3>
-        <p>Contacts, projects, knowledge, decisions, conversations, preferences, reminders — all in a single <code>~/memory.db</code> file. Includes a normalized topic index, per-session analytics, watchword triggers, background job queue, context packs, entity aliases, and proposal staging. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
+        <h3>The Database — SQLite memory graph, on your machine</h3>
+        <p>Contacts, projects, tasks, knowledge, decisions, retrieval runs, pathway stats, memory relations, and more — all in a single <code>~/memory.db</code> file. Includes normalized topics, session analytics, watchword triggers, background jobs, context packs, and proposal staging. No server. No cloud. Queryable with any SQLite tool. Your data never leaves your machine.</p>
       </div>
     </div>
     <div class="layer">
@@ -830,8 +830,8 @@
   <div class="features-grid">
     <div class="feature-card">
       <div class="feat-icon">🗄️</div>
-      <h4>26-Table Schema</h4>
-      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, conversation topics, session analytics, watchwords, background job queue, context packs, entity aliases, proposal staging, and more.</p>
+      <h4>Structured SQLite Schema</h4>
+      <p>Contacts, projects, tasks, knowledge, ideas, content, outreach, meetings, reminders, preferences, businesses, retrieval instrumentation, pathways, memory relations, and more.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon">🔄</div>
@@ -952,7 +952,7 @@
         </tr>
         <tr>
           <td>Structured tables</td>
-          <td class="highlight"><span class="check">✓</span> 26 tables</td>
+          <td class="highlight"><span class="check">✓</span> Structured relational schema</td>
           <td><span class="cross">✗</span> Flat files</td>
           <td><span class="partial">~</span> Limited</td>
           <td><span class="cross">✗</span></td>
@@ -1245,7 +1245,7 @@
     <div class="file-row"><code>EXAMPLES.md</code><span>Every memdb.py command with real conversation examples</span></div>
     <div class="file-row"><code>CHANGELOG.md</code><span>Full version history — every change documented</span></div>
     <div class="file-row"><code>docs/FAQ.md</code><span>Common questions, edge cases, and upgrade notes</span></div>
-    <div class="file-row"><code>tests/</code><span>pytest test suite — 7 test files, 129 tests. Covers memdb, recover, checkpoint, auto-checkpoint, sync-sessions, extraction quality, and proposal promotion. Runs against a temp DB, never touches your real data.</span></div>
+    <div class="file-row"><code>tests/</code><span>pytest test suite — 9 test files, 137 tests. Covers memdb, recover, checkpoint, auto-checkpoint, sync-sessions, memory intelligence modules, and benchmark scaffold execution. Runs against a temp DB, never touches your real data.</span></div>
   </div>
 </section>
 
@@ -1337,8 +1337,8 @@
   <div class="footer-logo">
     <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
   </div>
-  <p>Built by <a href="#">ZhiniLab LLC</a> · <a href="mailto:support@autoglia.com">support@autoglia.com</a></p>
-  <p style="margin-top:0.5rem;"><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="changelog.html">Changelog</a> · <a href="why-i-built.html">Our story</a></p>
+  <p>Built by <a href="index.html">ZhiniLab LLC</a> · <a href="mailto:support@autoglia.com">support@autoglia.com</a></p>
+  <p style="margin-top:0.5rem;"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="changelog.html">Changelog</a> · <a href="why-i-built.html">Our story</a></p>
   <p style="margin-top:1rem; font-size:0.75rem;">Autoglia is not affiliated with OpenClaw or Anthropic.</p>
 </footer>
 
