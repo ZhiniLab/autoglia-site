@@ -6,7 +6,7 @@
   <title>Changelog — Autoglia</title>
   <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
   <meta property="og:title" content="Autoglia Changelog">
-  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.11.0 — OpenClaw compatibility, updated session paths, and openclaw cron support.">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.12.0 — retrieval learning, pathway intelligence, and benchmark-backed memory upgrades.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com/changelog">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
@@ -388,7 +388,8 @@
   <!-- Sidebar index -->
   <nav class="cl-sidebar">
     <div class="cl-sidebar-title">Versions</div>
-    <a href="#v2110" class="latest"><span class="cl-sidebar-dot"></span>v2.11.0</a>
+    <a href="#v2120" class="latest"><span class="cl-sidebar-dot"></span>v2.12.0</a>
+    <a href="#v2110"><span class="cl-sidebar-dot"></span>v2.11.0</a>
     <a href="#v2100"><span class="cl-sidebar-dot"></span>v2.10.0</a>
     <a href="#v291"><span class="cl-sidebar-dot"></span>v2.9.1</a>
     <a href="#v290"><span class="cl-sidebar-dot"></span>v2.9.0</a>
@@ -407,11 +408,88 @@
   <!-- Entries -->
   <div class="cl-entries">
 
+    <!-- ── v2.12.0 ── -->
+    <div class="cl-entry" id="v2120">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.12.0</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">March 11, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>Autoglia now moves from passive persistence to <strong>measurable retrieval learning</strong>. Memory selection is logged, ranked, evaluated against outcomes, and continuously improved with deterministic rules. This release also ships the benchmark scaffold used to prove retrieval quality gains rather than relying on subjective claims.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">retrieval.py</span>
+            <span class="cl-item-text"><strong>Centralized retrieval and ranking engine.</strong> Collects candidates across memory tables, scores with explainable components, and assembles context-aware bundles with explicit quotas.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">retrieval_logger.py</span>
+            <span class="cl-item-text"><strong>Instrumentation writer.</strong> Logs retrieval runs, candidate scores, selected/injected items, and outcome events for full observability.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memory_learning.py</span>
+            <span class="cl-item-text"><strong>Deterministic learning updater.</strong> Applies outcome events to per-item counters and recomputes utility, stability, and decay scores.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">pathway_learning.py</span>
+            <span class="cl-item-text"><strong>Pathway signatures and bounded boosts.</strong> Learns repeated successful retrieval routes without allowing runaway score inflation.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memory_relations.py</span>
+            <span class="cl-item-text"><strong>Safety relation layer.</strong> Supports contradiction/supersession/support links and applies retrieval penalties for stale or disputed memory.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">benchmarks/</span>
+            <span class="cl-item-text"><strong>Benchmark scaffold.</strong> Replay, score, and compare runners for baseline vs upgraded memory behavior, including category-level evaluation outputs.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">docs</span>
+            <span class="cl-item-text"><strong><code>MEMORY_INTELLIGENCE_SPEC.md</code></strong> freezes canonical names, scoring semantics, relation types, and benchmark contract before rollout.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">migrate.py</span>
+            <span class="cl-item-text">Added migrations 11-13 for retrieval telemetry tables, learned score columns, pathways, bundle metadata, and memory relations. Existing databases at version 0 now correctly bootstrap and continue migrations.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">recover.py</span>
+            <span class="cl-item-text">Recovery now executes ranked retrieval selection, logs a retrieval run, and records pathway usage for every session briefing.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memdb.py</span>
+            <span class="cl-item-text">New observability commands for outcomes, retrieval runs/items, pathways, promoted memories, stale memories, and relation management.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text">Startup context pack generation now uses quota-based retrieval bundles. Inference-heavy jobs are explicitly optional and non-blocking by default.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">dashboard.py + stats.py</span>
+            <span class="cl-item-text">Added retrieval/pathway/staleness observability endpoints and memory intelligence metrics to health reports.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">tests</span>
+            <span class="cl-item-text">Expanded test suite to 137 passing tests, including memory intelligence integration and benchmark scaffold smoke tests.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── v2.11.0 ── -->
     <div class="cl-entry" id="v2110">
       <div class="cl-version-header">
         <span class="cl-version">v2.11.0</span>
-        <span class="cl-badge latest">Latest</span>
       </div>
       <div class="cl-date">March 9, 2026</div>
       <p><strong>OpenClaw compatibility update.</strong> Session paths updated from <code>~/.clawdbot/sessions/</code> to <code>~/.openclaw/agents/main/sessions/</code>. Cron commands updated from <code>clawdbot cron</code> to <code>openclaw cron</code>. The skill now auto-detects whether OpenClaw or Clawdbot is installed and uses the correct CLI and state directory. Backward-compatible with existing Clawdbot installs.</p>

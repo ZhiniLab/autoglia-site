@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Get Your Free Update — Autoglia v2.11.0</title>
-  <meta name="description" content="Already purchased Autoglia? Enter your email to get your free v2.11.0 update link.">
+  <title>Get Your Free Update — Autoglia v2.12.0</title>
+  <meta name="description" content="Already purchased Autoglia? Enter your email to get your free v2.12.0 update link.">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -307,21 +307,21 @@
 
 <main>
   <div class="card">
-    <div class="card-badge"><span></span> Free update — v2.11.0</div>
+    <div class="card-badge"><span></span> Free update — v2.12.0</div>
     <h1>Get your free update.</h1>
-    <p class="subtitle">Already a customer? Enter the email you used to purchase and we'll send you a fresh v2.11.0 download link instantly.</p>
+    <p class="subtitle">Already a customer? Enter the email you used to purchase and we'll send you a fresh v2.12.0 download link instantly.</p>
 
     <div class="whats-new">
-      <div class="whats-new-label">What's new in v2.11.0</div>
+      <div class="whats-new-label">What's new in v2.12.0</div>
       <ul>
-        <li><strong>Background memory agent</strong> — <code>memory-agent.py</code> runs every 15 min, maintains the DB while you're away</li>
-        <li><strong>Proposal staging</strong> — extracted decisions, entities, and open loops land in a review queue, not canonical tables</li>
-        <li><strong>Context packs</strong> — precomputed startup and project snapshots for instant session briefings</li>
-        <li><strong>Health scoring</strong> — 5 bounded metrics in <code>stats.py</code>: duplicate risk, stale tasks, backlog, orphans, freshness</li>
-        <li><strong>Entity normalization</strong> — case-folding, whitespace cleanup, and alias table for high-value entities</li>
-        <li><strong>Content-hash dedup</strong> — smarter transcript deduplication, no more timestamp collisions</li>
-        <li><strong>Open-loop detection</strong> — stale tasks and unanswered threads surfaced at session start</li>
-        <li><strong>129 tests passing</strong> — 7 test files including extraction quality and promotion harness</li>
+        <li><strong>Retrieval telemetry</strong> — every recovery run now logs scored candidates, selected items, and injected bundle items</li>
+        <li><strong>Learned scoring</strong> — deterministic utility/stability/decay updates based on outcome events</li>
+        <li><strong>Structured bundles</strong> — context-type quotas replace naive top-k memory injection</li>
+        <li><strong>Pathway learning</strong> — repeated successful retrieval routes get bounded boosts</li>
+        <li><strong>Safety relations</strong> — contradiction/supersession links downweight stale or disputed memories</li>
+        <li><strong>Benchmark scaffold</strong> — baseline vs upgraded replay/score/compare scripts shipped in-package</li>
+        <li><strong>Observability commands</strong> — new <code>memdb.py</code> commands for retrieval runs, pathways, stale memory, and outcomes</li>
+        <li><strong>137 tests passing</strong> — coverage for migrations, learning, pathways, safety, and benchmark pipeline</li>
       </ul>
     </div>
 
