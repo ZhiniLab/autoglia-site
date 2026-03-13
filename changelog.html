@@ -6,7 +6,7 @@
   <title>Changelog — Autoglia</title>
   <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
   <meta property="og:title" content="Autoglia Changelog">
-  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.12.0 — retrieval learning, pathway intelligence, and benchmark-backed memory upgrades.">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.13.0 — learning pipeline now activates automatically on every install, plus a critical background job fix.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com/changelog">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
@@ -388,7 +388,8 @@
   <!-- Sidebar index -->
   <nav class="cl-sidebar">
     <div class="cl-sidebar-title">Versions</div>
-    <a href="#v2120" class="latest"><span class="cl-sidebar-dot"></span>v2.12.0</a>
+    <a href="#v2130" class="latest"><span class="cl-sidebar-dot"></span>v2.13.0</a>
+    <a href="#v2120"><span class="cl-sidebar-dot"></span>v2.12.0</a>
     <a href="#v2110"><span class="cl-sidebar-dot"></span>v2.11.0</a>
     <a href="#v2100"><span class="cl-sidebar-dot"></span>v2.10.0</a>
     <a href="#v291"><span class="cl-sidebar-dot"></span>v2.9.1</a>
@@ -408,11 +409,70 @@
   <!-- Entries -->
   <div class="cl-entries">
 
+    <!-- ── v2.13.0 ── -->
+    <div class="cl-entry" id="v2130">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.13.0</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">March 13, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>v2.12.0 built the full retrieval learning stack — pathway signatures, outcome tracking, score updates, the works. But the pipeline was <strong>silently disabled</strong> on every installation. The flag that turned it on existed; it just never got set. This release closes that gap: <strong>the learning pipeline activates automatically on every fresh install and upgrade</strong>, no manual configuration required. Memory that was designed to improve itself now actually does.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label fixed">Fixed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text"><strong>Critical: stale <code>lastrowid</code> in <code>record_job()</code>.</strong> With <code>INSERT OR IGNORE</code>, SQLite can leave <code>cursor.lastrowid</code> set to a value from a <em>previous</em> successful insert even when the current statement was skipped. This caused every <code>context.build.projects</code> run to fail with <code>FOREIGN KEY constraint failed</code> — the job ID being written to <code>context_packs.created_by_job_id</code> didn't exist. Fix: use <code>SELECT changes()</code> to detect whether the insert actually wrote a row; if not, query the existing row by <code>idempotency_key</code> to get a valid ID.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text"><strong><code>get_config_bool()</code></strong> — reads a boolean key from <code>memory_config</code> with a safe fallback. Allows runtime flags to be stored in the database and toggled without editing cron jobs or source code.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text"><strong><code>--disable-inference-jobs</code> flag</strong> — mirror of <code>--enable-inference-jobs</code>. Lets a single cron invocation force-disable the learning pipeline without touching <code>memory_config</code>, useful for debugging or maintenance windows.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">migrate.py</span>
+            <span class="cl-item-text"><strong>Migration v14</strong> — inserts <code>memory.learning.enabled = true</code> into <code>memory_config</code> on install or upgrade. This is the default-on switch. Running <code>python3 migrate.py</code> on any existing install activates the learning pipeline immediately.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text"><strong>Inference jobs now default-on.</strong> The <code>extract</code>, <code>canonicalize</code>, and <code>conflicts</code> jobs previously required the <code>--enable-inference-jobs</code> flag. Now they run by default, controlled by <code>memory_config.memory.learning.enabled</code>. CLI flags can still override per-run.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">setup.py</span>
+            <span class="cl-item-text">The auto-checkpoint cron job registered during install now passes <code>--enable-inference-jobs</code> as a belt-and-suspenders guarantee that learning runs even on installs where the DB migration hasn't been applied yet.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">retrieval_logger.py · memory_learning.py · pathway_learning.py · memory_relations.py</span>
+            <span class="cl-item-text">Replaced <code>datetime.utcnow()</code> (deprecated, breaks in Python 3.14) with <code>datetime.now(timezone.utc)</code> throughout all four files. Timestamps remain in the same ISO format; no data migration needed.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── v2.12.0 ── -->
     <div class="cl-entry" id="v2120">
       <div class="cl-version-header">
         <span class="cl-version">v2.12.0</span>
-        <span class="cl-badge latest">Latest</span>
       </div>
       <div class="cl-date">March 11, 2026</div>
 
