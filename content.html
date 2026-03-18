@@ -27,33 +27,30 @@
       line-height: 1.6;
       min-height: 100vh;
     }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 2rem;
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
       background: rgba(7,7,15,0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
     }
-    .logo {
-      font-weight: 800;
-      font-size: 1.5rem;
-      color: var(--accent);
-      text-decoration: none;
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 34px; width: auto; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
+    .nav-links a {
+      color: var(--text-dim); text-decoration: none;
+      font-size: 0.9rem; transition: color 0.2s;
     }
-    nav a {
-      color: var(--text-dim);
-      text-decoration: none;
-      margin-left: 1.5rem;
-      font-weight: 500;
-      transition: color 0.2s;
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent); color: #000;
+      font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.25rem; border-radius: 6px;
+      text-decoration: none; transition: opacity 0.2s;
     }
-    nav a:hover { color: var(--accent); }
-    nav a.active { color: var(--accent); }
+    .nav-cta:hover { opacity: 0.85; }
     main {
       max-width: 1200px;
       margin: 0 auto;
@@ -148,14 +145,17 @@
   </style>
 </head>
 <body>
-  <header>
-    <a href="index.html" class="logo">◉ Autoglia</a>
-    <nav>
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+    </a>
+    <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="changelog.html">Changelog</a>
       <a href="content.html" class="active">Research</a>
-    </nav>
-  </header>
+      <a href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00" class="nav-cta">Get Autoglia →</a>
+    </div>
+  </nav>
 
   <main>
     <h1>Research & Documentation</h1>
