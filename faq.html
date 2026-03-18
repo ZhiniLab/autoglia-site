@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Installation FAQ — Autoglia</title>
+  <meta name="description" content="Troubleshooting and FAQ for Autoglia installation. Common issues, fixes, and post-install verification.">
+  <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #07070f; --bg2: #0d0d1c; --bg3: #12122a;
+      --cyan: #00d4ff; --cyan-dim: #00d4ff22;
+      --text: #f0f4ff; --muted: #8892a4;
+      --border: #1e2040; --success: #10b981;
+      --warn: #f5c542; --warn-dim: rgba(245,197,66,0.08);
+      --radius: 12px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px;
+      background: rgba(7,7,15,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; text-decoration: none; }
+    .nav-logo img { height: 34px; width: auto; }
+    .nav-back { color: var(--muted); text-decoration: none; font-size: 0.88rem; }
+    .nav-back:hover { color: var(--cyan); }
+
+    .page {
+      max-width: 760px; margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+    .page-header { margin-bottom: 3rem; }
+    .page-header h1 {
+      font-size: 2.2rem; font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 0.6rem;
+    }
+    .page-header p { color: var(--muted); font-size: 1rem; line-height: 1.65; }
+
+    /* Requirements box */
+    .req-box {
+      background: var(--warn-dim); border: 1px solid rgba(245,197,66,0.22);
+      border-radius: var(--radius); padding: 1.4rem 1.6rem;
+      margin-bottom: 3rem;
+    }
+    .req-box h2 {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--warn); margin-bottom: 0.9rem;
+    }
+    .req-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 2rem;
+    }
+    @media (max-width: 520px) { .req-grid { grid-template-columns: 1fr; } }
+    .req-item { font-size: 0.88rem; color: var(--muted); }
+    .req-item strong { color: var(--text); font-weight: 600; }
+
+    /* Section heading */
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 1.25rem; margin-top: 3rem;
+    }
+
+    /* FAQ items */
+    .faq { display: flex; flex-direction: column; gap: 1rem; }
+    .faq-item {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .faq-item summary {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 1.4rem; cursor: pointer;
+      font-size: 0.95rem; font-weight: 600; color: var(--text);
+      list-style: none; user-select: none;
+      gap: 1rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: "+"; color: var(--cyan); font-size: 1.2rem;
+      font-weight: 400; flex-shrink: 0; transition: transform 0.2s;
+    }
+    .faq-item[open] summary::after { content: "−"; }
+    .faq-item[open] { border-color: rgba(0,212,255,0.25); }
+    .faq-body {
+      padding: 0 1.4rem 1.3rem;
+      font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+    }
+    .faq-body p { margin-bottom: 0.75rem; }
+    .faq-body p:last-child { margin-bottom: 0; }
+    .faq-body code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      background: var(--bg3); color: var(--cyan);
+      padding: 0.15rem 0.4rem; border-radius: 4px;
+    }
+    .faq-body pre {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 1.2rem;
+      overflow-x: auto; margin: 0.75rem 0;
+    }
+    .faq-body pre code {
+      background: none; padding: 0; color: #a8d8ea;
+      font-size: 0.8rem; line-height: 1.7;
+    }
+    .faq-body strong { color: var(--text); font-weight: 600; }
+    .faq-body .tag {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.15rem 0.5rem; border-radius: 4px; margin-right: 0.4rem;
+    }
+    .tag-fix { background: rgba(16,185,129,0.12); color: var(--success); }
+    .tag-v { background: var(--cyan-dim); color: var(--cyan); }
+
+    /* Verify block */
+    .verify-box {
+      background: var(--bg2); border: 1px solid rgba(16,185,129,0.2);
+      border-radius: var(--radius); padding: 1.4rem 1.6rem;
+      margin-top: 3rem;
+    }
+    .verify-box h2 {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--success); margin-bottom: 1rem;
+    }
+    .verify-box pre {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto;
+    }
+    .verify-box pre code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.79rem;
+      color: #a8d8ea; line-height: 1.8;
+    }
+    .verify-box .comment { color: #4a5568; }
+
+    footer {
+      text-align: center; padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 0.82rem;
+    }
+    footer a { color: var(--cyan); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
+  </a>
+  <a href="index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <h1>Installation FAQ</h1>
+    <p>Common issues and what to do about them. If something goes wrong during install, start here.</p>
+  </div>
+
+  <div class="req-box">
+    <h2>System Requirements</h2>
+    <div class="req-grid">
+      <div class="req-item"><strong>OS:</strong> Linux or macOS only</div>
+      <div class="req-item"><strong>Python:</strong> 3.9 or later</div>
+      <div class="req-item"><strong>Bot:</strong> OpenClaw or Clawdbot with <code>exec</code> enabled</div>
+      <div class="req-item"><strong>Gateway:</strong> Must be running at install time</div>
+    </div>
+  </div>
+
+  <p class="section-label">Common Issues</p>
+
+  <div class="faq">
+
+    <details class="faq-item" open>
+      <summary>The bot isn't remembering conversations after install</summary>
+      <div class="faq-body">
+        <p>The most common cause: the hourly checkpoint cron job didn't register because the <strong>OpenClaw gateway wasn't running</strong> at install time. Setup registers this job automatically, but silently skips it if the gateway is offline.</p>
+        <p>Check whether the job exists:</p>
+        <pre><code>openclaw cron list | grep -i checkpoint</code></pre>
+        <p>If nothing shows up, register it manually:</p>
+        <pre><code>openclaw cron add \
+  --name "memory-db: Auto-checkpoint" \
+  --every 1h \
+  --session isolated \
+  --wake now \
+  --message "exec python3 ~/clawd/skills/memory-db/auto-checkpoint.py --quiet --enable-inference-jobs"</code></pre>
+        <p><strong>The <code>--enable-inference-jobs</code> flag is required.</strong> Without it, the learning pipeline stays inactive even if the rest of the setup is correct.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>The learning pipeline doesn't seem to be doing anything</summary>
+      <div class="faq-body">
+        <p>The retrieval-learning system requires a config flag in the database. Verify it's set:</p>
+        <pre><code>sqlite3 ~/memory.db "SELECT value FROM memory_config WHERE key='memory.learning.enabled';"</code></pre>
+        <p>If it returns nothing, run migrations to apply the missing setting:</p>
+        <pre><code>python3 ~/clawd/skills/memory-db/migrate.py migrate</code></pre>
+        <p>This is safe to run on any existing install — it only applies what's missing.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Getting a "Python 3.9+ required" error</summary>
+      <div class="faq-body">
+        <p>Check your current version:</p>
+        <pre><code>python3 --version</code></pre>
+        <p>On Ubuntu/Debian systems that ship Python 3.8, install a newer version via the deadsnakes PPA:</p>
+        <pre><code>sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.10
+python3.10 setup.py install</code></pre>
+        <p>On macOS, use Homebrew: <code>brew install python@3.11</code></p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Cron jobs stopped working after updating OpenClaw</summary>
+      <div class="faq-body">
+        <p><span class="tag tag-v">v2026.3.13+</span> OpenClaw 2026.3.13 enforces strict payload rules for cron jobs. Check your run log:</p>
+        <pre><code>openclaw cron runs --id &lt;job-id&gt;</code></pre>
+        <p>If you see <code>"isolated job requires payload.kind=agentTurn"</code> or errors mentioning <code>exec</code> payload kind, the job needs to be re-registered. The valid combinations are:</p>
+        <p>
+          <code>--session isolated</code> → agentTurn payload (used by auto-checkpoint)<br>
+          <code>--session main</code> → systemEvent payload
+        </p>
+        <p>The <code>exec</code> payload kind is no longer valid. Remove the old job and register a new one with the command shown in the question above.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary><code>clawdbot</code> command not found</summary>
+      <div class="faq-body">
+        <p>On newer installations the CLI is <code>openclaw</code> rather than <code>clawdbot</code>. Check which one is installed:</p>
+        <pre><code>which clawdbot || which openclaw</code></pre>
+        <p>If only <code>openclaw</code> is present, use <code>openclaw cron add</code> wherever the docs say <code>clawdbot cron add</code> — the flags are identical.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Stats show zero rows after install — is something broken?</summary>
+      <div class="faq-body">
+        <p>No — this is normal. The database is created empty. The bot writes to it during conversations, and the cron job checkpoints those conversations hourly.</p>
+        <p>After your first session, run <code>stats.py</code> again:</p>
+        <pre><code>python3 ~/clawd/skills/memory-db/stats.py</code></pre>
+        <p>You should see row counts in <code>conversation_transcripts</code> and <code>conversation_log</code>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>"Could not find AGENTS.md or SOUL.md"</summary>
+      <div class="faq-body">
+        <p>Setup automatically searches for your bot config file. Make sure <code>~/clawd/</code> exists and contains either <code>AGENTS.md</code> or <code>SOUL.md</code>. If your bot config is in a non-standard location, run setup from inside that directory.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>"memory-db block already present"</summary>
+      <div class="faq-body">
+        <p>The skill is already installed. To verify it's healthy:</p>
+        <pre><code>python3 ~/clawd/skills/memory-db/setup.py check</code></pre>
+        <p>To start over from scratch:</p>
+        <pre><code>python3 ~/clawd/skills/memory-db/setup.py uninstall</code></pre>
+        <p>Uninstall restores your bot config from backup and lets you choose what to do with <code>memory.db</code> — keep it, archive it, or delete it.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>I upgraded and now I'm missing features / getting schema errors</summary>
+      <div class="faq-body">
+        <p>When upgrading, always run migrations after replacing the files:</p>
+        <pre><code>python3 ~/clawd/skills/memory-db/migrate.py status
+python3 ~/clawd/skills/memory-db/migrate.py migrate</code></pre>
+        <p>Migrations are idempotent — running them again on an already-current DB does nothing. They only apply what's missing. Your data is never touched.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Windows support?</summary>
+      <div class="faq-body">
+        <p>Windows is not supported. OpenClaw itself doesn't run natively on Windows, and the shell commands baked into the bot config are bash-specific.</p>
+        <p><strong>Windows users:</strong> install <a href="https://learn.microsoft.com/en-us/windows/wsl/install" style="color:var(--cyan)">WSL2</a> with Ubuntu, then follow the standard Linux instructions from inside the WSL2 terminal.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <div class="verify-box">
+    <h2>Post-Install Verification</h2>
+    <pre><code><span class="comment"># Tables exist (expect 40+)</span>
+sqlite3 ~/memory.db ".tables" | tr ' ' '\n' | wc -l
+
+<span class="comment"># Learning is enabled</span>
+sqlite3 ~/memory.db "SELECT value FROM memory_config WHERE key='memory.learning.enabled';"
+<span class="comment"># → should return: true</span>
+
+<span class="comment"># Schema is current</span>
+python3 ~/clawd/skills/memory-db/migrate.py status
+
+<span class="comment"># Cron job is registered</span>
+openclaw cron list | grep -i checkpoint
+
+<span class="comment"># Overall health</span>
+python3 ~/clawd/skills/memory-db/stats.py</code></pre>
+  </div>
+
+</div>
+
+<footer>
+  <p>Still stuck? Email <a href="mailto:support@autoglia.com">support@autoglia.com</a> — we reply within 24 hours.</p>
+</footer>
+
+</body>
+</html>

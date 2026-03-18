@@ -70,6 +70,28 @@
     .support { color: var(--muted); font-size: 0.85rem; }
     .support a { color: var(--cyan); text-decoration: none; }
     .support a:hover { text-decoration: underline; }
+    .reqs {
+      background: rgba(255,200,0,0.04); border: 1px solid rgba(255,200,0,0.18);
+      border-radius: var(--radius); padding: 1.1rem 1.4rem;
+      text-align: left; margin-bottom: 1.5rem;
+    }
+    .reqs-title {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #f5c542; margin-bottom: 0.6rem;
+    }
+    .reqs ul { list-style: none; padding: 0; margin: 0; }
+    .reqs ul li {
+      font-size: 0.82rem; color: var(--muted); padding: 0.25rem 0;
+      padding-left: 1.1rem; position: relative; line-height: 1.45;
+    }
+    .reqs ul li::before { content: "·"; position: absolute; left: 0; color: #f5c542; }
+    .reqs ul li strong { color: var(--text); font-weight: 600; }
+    .faq-link { text-align: center; margin-bottom: 1.5rem; }
+    .faq-link a {
+      font-size: 0.82rem; color: var(--muted); text-decoration: none;
+      border-bottom: 1px solid rgba(136,146,164,0.3);
+    }
+    .faq-link a:hover { color: var(--cyan); border-color: var(--cyan); }
   </style>
 </head>
 <body>
@@ -88,6 +110,16 @@
         <p class="email-label">Download link sent to your email</p>
         <p class="email-hint">Link expires in 48 hours · 3 downloads · unique to you</p>
       </div>
+    </div>
+
+    <div class="reqs">
+      <p class="reqs-title">Before you start</p>
+      <ul>
+        <li><strong>Linux or macOS only</strong> — Windows users: use WSL2</li>
+        <li><strong>Python 3.9+</strong> — check with <code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;background:#12122a;color:#00d4ff;padding:0.1rem 0.3rem;border-radius:3px">python3 --version</code></li>
+        <li><strong>OpenClaw gateway must be running</strong> at install time — it registers a cron job automatically; if the gateway is off, the job won't register and memory won't checkpoint</li>
+        <li><strong>After install</strong>, run <code style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;background:#12122a;color:#00d4ff;padding:0.1rem 0.3rem;border-radius:3px">openclaw cron list</code> to confirm the hourly checkpoint job is active</li>
+      </ul>
     </div>
 
     <div class="steps">
@@ -110,6 +142,7 @@
       </div>
     </div>
 
+    <div class="faq-link"><a href="faq.html">Installation FAQ &amp; troubleshooting →</a></div>
     <p class="support">Questions? <a href="mailto:support@autoglia.com">support@autoglia.com</a> — we reply within 24 hours.</p>
   </div>
 </body>
