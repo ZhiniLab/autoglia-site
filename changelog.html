@@ -6,7 +6,7 @@
   <title>Changelog — Autoglia</title>
   <meta name="description" content="Full version history for Autoglia — the persistent SQLite memory layer for OpenClaw agents. Every change, every release.">
   <meta property="og:title" content="Autoglia Changelog">
-  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.13.0 — learning pipeline now activates automatically on every install, plus a critical background job fix.">
+  <meta property="og:description" content="Full version history for Autoglia. See what's new in v2.14.0 — synthesis sync bug fixed, checkpoint freshness corrected, stats now surfaces skill version and open proposals.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com/changelog">
   <link rel="icon" type="image/png" href="assets/autoglia-icon-square.png">
@@ -389,7 +389,8 @@
   <!-- Sidebar index -->
   <nav class="cl-sidebar">
     <div class="cl-sidebar-title">Versions</div>
-    <a href="#v2130" class="latest"><span class="cl-sidebar-dot"></span>v2.13.0</a>
+    <a href="#v2140" class="latest"><span class="cl-sidebar-dot"></span>v2.14.0</a>
+    <a href="#v2130"><span class="cl-sidebar-dot"></span>v2.13.0</a>
     <a href="#v2120"><span class="cl-sidebar-dot"></span>v2.12.0</a>
     <a href="#v2110"><span class="cl-sidebar-dot"></span>v2.11.0</a>
     <a href="#v2100"><span class="cl-sidebar-dot"></span>v2.10.0</a>
@@ -410,11 +411,66 @@
   <!-- Entries -->
   <div class="cl-entries">
 
+    <!-- ── v2.14.0 ── -->
+    <div class="cl-entry" id="v2140">
+      <div class="cl-version-header">
+        <span class="cl-version">v2.14.0</span>
+        <span class="cl-badge latest">Latest</span>
+      </div>
+      <div class="cl-date">April 1, 2026</div>
+
+      <div class="cl-why">
+        <div class="cl-why-label">Why this matters</div>
+        <p>Two silent correctness bugs fixed. The <strong>synthesis sync job was running a full knowledge-table sync up to 30 times per agent cycle</strong> — once per topic, without scoping to that topic. It should run once. Separately, <strong><code>checkpoint_hours_ago</code> could produce negative values</strong> on systems where SQLite stores UTC and the local clock is offset, making health reports untrustworthy. Both are fixed with tests. The release also adds four new operational fields to <code>stats.py --json</code> so you can see skill version, open proposal count, last background job, and pending synthesis topics in a single call.</p>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label fixed">Fixed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">memory-agent.py</span>
+            <span class="cl-item-text"><strong>Redundant synthesis sync loop.</strong> The <code>synthesis.sync</code> job looped over up to 30 topics and called <code>synthesize.py sync --quiet</code> once per topic — without passing <code>--topic</code>, so each call synced the entire knowledge table. Fix: call <code>synthesize.py sync</code> exactly once per agent run. The command is idempotent and already handles all topics internally.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">stats.py</span>
+            <span class="cl-item-text"><strong><code>checkpoint_hours_ago</code> timezone fragility.</strong> Previous code stripped the timezone offset from a stored timestamp then subtracted it from <code>datetime.now()</code> (local time). On any system where SQLite stores UTC and the local clock is offset, the result was wrong — potentially negative. Fix: use <code>datetime.utcnow()</code> consistently on both sides, treating stored timestamps as naive UTC.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label added">Added</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">stats.py</span>
+            <span class="cl-item-text"><strong>Four new operational fields in <code>--json</code> output.</strong> <code>skill_version</code> — read live from <code>setup.py</code>, catches version drift immediately. <code>open_proposals</code> — count of pending review items. <code>last_background_job</code> — most recent agent run result. <code>pending_synthesis_topics</code> — knowledge topics with no synthesis yet; <code>null</code> if the synthesis engine hasn't been initialized. Human-readable header also now shows <code>Skill: vX.Y.Z</code>.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">tests/</span>
+            <span class="cl-item-text"><strong>15 new tests, 152 total passing.</strong> <code>test_synthesis_sync.py</code> verifies the sync job calls subprocess exactly once and never passes <code>--topic</code>. <code>test_stats.py</code> covers UTC correctness for checkpoint freshness and all four new JSON fields including schema-guarded <code>pending_synthesis_topics</code>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cl-section">
+        <div class="cl-section-label changed">Changed</div>
+        <div class="cl-items">
+          <div class="cl-item">
+            <span class="cl-item-tag">setup.py</span>
+            <span class="cl-item-text"><strong><code>SKILL_VERSION</code> corrected to <code>"2.14.0"</code>.</strong> The version string was left at <code>"2.10.0"</code> across the v2.11.0–v2.13.0 releases. <code>setup.py</code> is now the declared canonical version source — <code>stats.py --json</code> reads from it directly so version drift is immediately visible.</span>
+          </div>
+          <div class="cl-item">
+            <span class="cl-item-tag">SKILL.md</span>
+            <span class="cl-item-text"><strong>Dashboard section updated.</strong> Replaced the stale "Local web dashboard — coming in v3" roadmap line with accurate documentation: <code>dashboard.py</code> already ships at <code>http://localhost:5000</code>, separate from the Command Center on port 8080.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── v2.13.0 ── -->
     <div class="cl-entry" id="v2130">
       <div class="cl-version-header">
         <span class="cl-version">v2.13.0</span>
-        <span class="cl-badge latest">Latest</span>
       </div>
       <div class="cl-date">March 13, 2026</div>
 
