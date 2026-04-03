@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Autoglia — The Memory That Runs Itself</title>
-  <meta name="description" content="Persistent SQLite memory for your OpenClaw agent. Automatic recording, conversation segmentation, context recovery, and a full web dashboard. One-time purchase, no subscription, no cloud.">
+  <meta name="description" content="Open-source MIT SQLite memory for your OpenClaw agent. Automatic recording, conversation segmentation, context recovery, and a local web dashboard. No subscription, no cloud.">
   <meta property="og:title" content="Autoglia — The Memory That Runs Itself">
-  <meta property="og:description" content="Give your OpenClaw agent a real brain. 22-table SQLite database, automatic recording, conversation segmentation, and context recovery that works even when the AI doesn't.">
+  <meta property="og:description" content="Give your OpenClaw agent a real brain. Open source (MIT), local SQLite, automatic recording, conversation segmentation, and context recovery that works even when the AI doesn't.">
   <meta property="og:image" content="https://autoglia.com/assets/autoglia-logo-astrocyte.png">
   <meta property="og:url" content="https://autoglia.com">
   <meta property="og:type" content="website">
@@ -574,11 +574,12 @@
     <a href="#how-it-works">How it works</a>
     <a href="#security">Security</a>
     <a href="#features">Features</a>
-    <a href="#pricing">Pricing</a>
+    <a href="#install">Install</a>
     <a href="#faq">FAQ</a>
     <a href="changelog.html">Changelog</a>
     <a href="why-i-built.html">Our story</a>
-    <a class="nav-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia →</a>
+    <a href="https://github.com/ZhiniLab/autoglia/discussions" target="_blank" rel="noopener">Community</a>
+    <a class="nav-cta" href="https://github.com/ZhiniLab/autoglia" target="_blank" rel="noopener">View on GitHub →</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
@@ -590,24 +591,25 @@
   <a href="#how-it-works">How it works</a>
   <a href="#security">Security</a>
   <a href="#features">Features</a>
-  <a href="#pricing">Pricing</a>
+  <a href="#install">Install</a>
   <a href="#faq">FAQ</a>
   <a href="changelog.html">Changelog</a>
   <a href="why-i-built.html">Our story</a>
-  <a class="mobile-cta" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
+  <a href="https://github.com/ZhiniLab/autoglia/discussions" target="_blank" rel="noopener">Community</a>
+  <a class="mobile-cta" href="https://github.com/ZhiniLab/autoglia" target="_blank" rel="noopener">View on GitHub →</a>
 </div>
 
 <!-- ── HERO ── -->
 <div class="hero">
-  <div class="hero-badge"><span></span> For OpenClaw agents — v2.13.0</div>
+  <div class="hero-badge"><span></span> For OpenClaw agents — open source (MIT)</div>
   <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia" style="height:96px;width:auto;margin-bottom:1.5rem;">
   <h1>The memory that<br><em>runs itself.</em></h1>
   <p class="hero-sub">Your OpenClaw agent wakes up fresh every session. Autoglia gives it a real SQLite brain — structured memory that records automatically, survives context loss, and knows who you are.</p>
   <div class="hero-actions">
-    <a class="btn-primary" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
-    <a class="btn-secondary" href="#how-it-works">See how it works</a>
+    <a class="btn-primary" href="https://github.com/ZhiniLab/autoglia" target="_blank" rel="noopener">View on GitHub →</a>
+    <a class="btn-secondary" href="#install">Install &amp; migrate</a>
   </div>
-  <p class="hero-price">One-time purchase. No subscription. No cloud. <strong>Introductory price — raises to $29.</strong></p>
+  <p class="hero-price">Free and open source under the MIT License. No subscription. No cloud. Your data stays local.</p>
 
   <div class="hero-img">
     <div class="dashboard-mock">
@@ -973,7 +975,7 @@
         </tr>
         <tr>
           <td>Price</td>
-          <td class="highlight">$19 one-time</td>
+          <td class="highlight">Free (MIT)</td>
           <td>$9 one-time</td>
           <td>$29/month ($348/yr)</td>
           <td>Subscription</td>
@@ -1041,7 +1043,7 @@
       {type:'out', spans:[{text:'─────────────────────────────────────────────', cls:'t-rule'}]},
       {type:'out', spans:[{text:'  Last session:   ', cls:'t-dim'},{text:'Q1 launch prep (Mar 1, 12:30 PM)', cls:''}]},
       {type:'out', spans:[{text:'  Open tasks:     ', cls:'t-dim'},{text:'Draft 3 posts · Review pricing strategy', cls:''}]},
-      {type:'out', spans:[{text:'  Decisions made: ', cls:'t-dim'},{text:'Twitter-first rollout · $19 launch price', cls:''}]},
+      {type:'out', spans:[{text:'  Decisions made: ', cls:'t-dim'},{text:'Twitter-first rollout · docs-first launch', cls:''}]},
       {type:'out', spans:[{text:'  Contacts:       ', cls:'t-dim'},{text:'Alex Rivera', cls:'t-purple'},{text:' (Acme Corp) · ', cls:'t-dim'},{text:'Morgan Chen', cls:'t-purple'}]},
       {type:'out', spans:[{text:'─────────────────────────────────────────────', cls:'t-rule'}]},
       {type:'blank'},
@@ -1245,34 +1247,32 @@
     <div class="file-row"><code>EXAMPLES.md</code><span>Every memdb.py command with real conversation examples</span></div>
     <div class="file-row"><code>CHANGELOG.md</code><span>Full version history — every change documented</span></div>
     <div class="file-row"><code>docs/FAQ.md</code><span>Common questions, edge cases, and upgrade notes</span></div>
-    <div class="file-row"><code>tests/</code><span>pytest test suite — 9 test files, 137 tests. Covers memdb, recover, checkpoint, auto-checkpoint, sync-sessions, memory intelligence modules, and benchmark scaffold execution. Runs against a temp DB, never touches your real data.</span></div>
+    <div class="file-row"><code>tests/</code><span>pytest test suite — 15+ test files, 150+ tests. Covers memdb, recover, checkpoint, auto-checkpoint, sync-sessions, memory intelligence modules, and benchmark scaffold execution. Runs against a temp DB, never touches your real data.</span></div>
   </div>
 </section>
 
-<!-- ── PRICING ── -->
-<section id="pricing">
-  <div class="section-label">Pricing</div>
-  <h2>One price. Forever.</h2>
-  <p class="section-sub">LLMory Pro charges $29 a month. Autoglia charges $19. Once. You get all future updates included.</p>
+<!-- ── INSTALL ── -->
+<section id="install">
+  <div class="section-label">Install</div>
+  <h2>Clone, migrate, run.</h2>
+  <p class="section-sub">Autoglia is <strong>open source (MIT)</strong>. Get the code on GitHub, run <code>migrate.py</code> on your database, and wire <code>sync-sessions.py</code> + <code>recover.py</code> into your agent startup. Questions? Use <a href="https://github.com/ZhiniLab/autoglia/discussions" style="color:var(--cyan);">Discussions</a>.</p>
   <div class="pricing-wrap">
     <div class="pricing-card">
-      <div class="pricing-badge">Introductory Launch Price</div>
-      <div class="pricing-price"><sup>$</sup>19</div>
-      <div class="pricing-note">one-time — no subscription, ever</div>
-      <div class="pricing-raise">Price raises to <strong>$29</strong> after the first 50 customers. <em>You lock in $19 forever.</em></div>
+      <div class="pricing-badge">Open source</div>
+      <div class="pricing-price" style="font-size:1.75rem;line-height:1.3;">MIT License</div>
+      <div class="pricing-note">no charge — fork, modify, ship</div>
+      <div class="pricing-raise">Updates ship on <strong>GitHub</strong>. Pull the latest anytime; run <code>python3 migrate.py</code> to upgrade your schema safely.</div>
       <ul class="pricing-features">
-          <li><span class="ok">✓</span> Full v2.13.0 package — all files included</li>
+        <li><span class="ok">✓</span> Full skill source — tests, dashboard, migrations</li>
         <li><span class="ok">✓</span> Auto-checkpoint + context recovery</li>
-        <li><span class="ok">✓</span> Web dashboard included</li>
-        <li><span class="ok">✓</span> All future version updates</li>
-        <li><span class="ok">✓</span> Email support</li>
-        <li><span class="ok">✓</span> Lifetime access — download anytime</li>
+        <li><span class="ok">✓</span> Local web dashboard (optional Flask)</li>
+        <li><span class="ok">✓</span> Community support via Discussions</li>
+        <li><span class="ok">✓</span> Bugs and ideas via GitHub Issues</li>
+        <li><span class="ok">✓</span> Email: <a href="mailto:support@autoglia.com" style="color:var(--muted);">support@autoglia.com</a></li>
         <li><span class="ok">✓</span> Your data stays on your machine. Always.</li>
       </ul>
-      <!-- Replace href with your Stripe Payment Link -->
-      <a class="stripe-btn" href="https://buy.stripe.com/28E6oJ0PO308fpd31PdAk00">Get Autoglia — $19 →</a>
-      <p class="pricing-small">Secure checkout via Stripe. Delivered instantly to your inbox.</p>
-      <p class="pricing-small" style="margin-top:0.4rem;">All sales final — digital product, no refunds. <a href="mailto:support@autoglia.com" style="color:var(--muted);">Need help? We've got you.</a></p>
+      <a class="stripe-btn" href="https://github.com/ZhiniLab/autoglia" target="_blank" rel="noopener">Open the repository →</a>
+      <p class="pricing-small">Prefer a walkthrough? See the <a href="faq.html" style="color:var(--cyan);">Installation FAQ</a>.</p>
     </div>
   </div>
 </section>
@@ -1315,7 +1315,7 @@
     </details>
     <details>
       <summary>What if I have a technical issue?</summary>
-      <p>Email <a href="mailto:support@autoglia.com">support@autoglia.com</a> and we'll help you get it working. All sales are final on digital products, but we're committed to making sure it works for you.</p>
+      <p>Email <a href="mailto:support@autoglia.com">support@autoglia.com</a> for private support, or ask in <a href="https://github.com/ZhiniLab/autoglia/discussions" style="color:var(--cyan);">GitHub Discussions</a> so others can benefit.</p>
     </details>
     <details>
       <summary>Does my data ever leave my machine?</summary>
@@ -1341,7 +1341,7 @@
     <img src="assets/autoglia-logo-astrocyte.png" alt="Autoglia">
   </div>
   <p>Built by <a href="index.html">ZhiniLab LLC</a> · <a href="mailto:support@autoglia.com">support@autoglia.com</a></p>
-  <p style="margin-top:0.5rem;"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="changelog.html">Changelog</a> · <a href="why-i-built.html">Our story</a> · <a href="faq.html">Install help</a></p>
+  <p style="margin-top:0.5rem;"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="changelog.html">Changelog</a> · <a href="why-i-built.html">Our story</a> · <a href="faq.html">Install help</a> · <a href="https://github.com/ZhiniLab/autoglia" target="_blank" rel="noopener">GitHub</a></p>
   <p style="margin-top:1rem; font-size:0.75rem;">Autoglia is not affiliated with OpenClaw or Anthropic.</p>
 </footer>
 
